@@ -14,7 +14,7 @@ Step 2: install the latest version of `ansible` in the virtual environment
 
 ``` shell
 source ./ENV/bin/activate
-pip install ansible
+pip install ansible configparser python-hostlist
 ansible --version # ansible 2.8.4 or later
 ```
 
