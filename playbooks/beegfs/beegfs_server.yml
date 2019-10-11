@@ -1,0 +1,43 @@
+---
+- hosts: storage_nodes[0]
+  gather_facts: False
+
+  tasks:
+    # Get hostname
+    - name: Get hostname
+      shell: hostname
+      register: output
+    - debug: var=output.stdout_lines
+    
+- hosts: storage_nodes[1:]
+  gather_facts: False
+  
+  tasks:
+  # # Print out Sarus version
+  # - name: load container runtime system
+  #   shell: module load {{ sarus_module }}; sarus --version
+  #   register: output
+  # - debug: var=output.stdout_lines
+
+  # # Get hostname through a container
+  # - name: get hostname
+  #   shell: module load {{ sarus_module }};
+  #          sarus run --entrypoint
+  #          --mount=type=bind,bind-propagation=recursive,source=/mnt,destination=/mnt
+  #          load/library/beegfs-server
+  #          bash -c 'hostname'
+  #   register: output
+  # - debug: var=output.stdout_lines
+
+  # # Get facts on storage nodes
+  # - name: gather hardware details from nodes
+  #   setup:
+  #     filter: 'ansible_devices'
+  #   register: output
+  # - debug: var="{{ hostvars[inventory_hostname]['ansible_facts']['devices']['nvme0n1'] | to_nice_json }}"
+
+  # Use inventory in playbook
+  - name: find mount points
+    shell: lsblk | grep {{ hostvars[inventory_hostname]['disk_0']['name'] }}
+    register: output
+  - debug: var=output.stdout_lines
