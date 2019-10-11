@@ -1,23 +1,35 @@
 ---
 - hosts: storage_nodes[0]
   gather_facts: False
-
+  vars:
+    storeMgmtdDirectory: 'mgmtd-1'
+  
   tasks:
-    # Get hostname
-    - name: Get hostname
-      shell: hostname
-      register: output
-    - debug: var=output.stdout_lines
-    
+  # Get hostname
+  - name: Get hostname
+    shell: hostname
+    register: output
+  - debug: var=output.stdout_lines
+
+  - name: Template BeeGFS management configuration file
+    ini_file:
+      path: "{{ root_dir }}/playbooks/beegfs/configurations/beegfs-mgmtd.conf"
+      section: null
+      option: storeMgmtdDirectory
+      value: mgmtd-1
+      backup: yes
+
+    # log?
+        
 - hosts: storage_nodes[1:]
   gather_facts: False
   
   tasks:
-  # # Print out Sarus version
-  # - name: load container runtime system
-  #   shell: module load {{ sarus_module }}; sarus --version
-  #   register: output
-  # - debug: var=output.stdout_lines
+  # Print out Sarus version
+  - name: load container runtime system
+    shell: module load {{ sarus_module }}; sarus --version
+    register: output
+  - debug: var=output.stdout_lines
 
   # # Get hostname through a container
   # - name: get hostname
