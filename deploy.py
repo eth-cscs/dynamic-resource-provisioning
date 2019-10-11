@@ -26,14 +26,18 @@ def main (argv):
     # scheduler_nodelist = os.environ['SLURM_JOB_NODELIST']
     nodes_list = hostlist.expand_hostlist (scheduler_nodelist)
 
+    # Load inventory file
     config = configparser.ConfigParser (allow_no_value=True)
+
     if not os.path.exists (target):
         print ('[ERR] Cannot find this inventory: '+target)
-        sys.exit()    
-    
+        sys.exit()
+        
     config_file = open (target)
     config.read_file (config_file)
     config_file.close ()
+
+    # Empty storage nodes section and repopulate it with allocated nodes
     config = empty_section (config, section)
 
     for node in nodes_list:
@@ -52,21 +56,3 @@ def main (argv):
     
 if __name__ == "__main__":
     main (sys.argv[1:])
-
-
-# Run Ansible Playbook
-# loader       = DataLoader ()
-# inventory    = InventoryManager (loader=loader, sources=target)
-# variable_mgr = VariableManager (loader=loader, inventory=inventory)
-
-# if not os.path.exists (playbook):
-#     print ('[ERR] Cannot find this playbook: '+playbook)
-#     sys.exit()
-
-# executor = PlaybookExecutor (playbooks=[playbook],
-#                              inventory=inventory,
-#                              variable_manager=variable_mgr,
-#                              loader=loader,
-#                              passwords={})
-
-# executor.run ()
