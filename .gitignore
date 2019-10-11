@@ -1,3 +1,5 @@
 *~
 .#*
 \#*#
+ENV/*
+!ENV/VIRTUALENV
