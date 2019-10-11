@@ -1,0 +1,5 @@
+# The global variable file for container-based dynamic resource provisioning
+
+# Sarus: OCI-compliant container runtime for HPC
+sarus_module: /apps/dom/SI/modulefiles/sarus/1.0.0-rc7-78-g108944a-Release
+
