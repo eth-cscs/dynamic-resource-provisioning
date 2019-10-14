@@ -1,35 +1,91 @@
 ---
+- hosts: storage_nodes
+  gather_facts: False
+
+  tasks:
+    #- set_fact: first_disk="{{
+    #hostvars[inventory_hostname]['disk_0']['mount_point'] }}"
+     - set_fact: first_disk="{{ disks[0].mount_point }}"
+     - set_fact: log_dir="{{ first_disk }}/log"
+     - set_fact: template_dir="{{ root_dir }}/playbooks/beegfs/templates"
+     - set_fact: config_dir="{{ root_dir }}/playbooks/beegfs/configurations"
+
 - hosts: storage_nodes[0]
   gather_facts: False
   vars:
-    storeMgmtdDirectory: 'mgmtd-1'
-  
-  tasks:
-  # Get hostname
-  - name: Get hostname
-    shell: hostname
-    register: output
-  - debug: var=output.stdout_lines
+    # Management vars
+    mgmtd_dir: "{{ first_disk }}/mgmtd-0"
+    mgmtd_log_file: "{{ log_dir }}/beegfs-mgmtd.log"
 
+    # Monitoring vars
+    admon_mgmtd_host: "localhost"
+    admon_db_file: "{{ first_disk }}/admon-0/beegfs-admon.db"
+    admon_log_file: "{{ log_dir }}/beegfs-admon.log"
+    
+  tasks:
+  #####################
+  # BeeGFS Management #
+  #####################
   - name: Template BeeGFS management configuration file
-    ini_file:
-      path: "{{ root_dir }}/playbooks/beegfs/configurations/beegfs-mgmtd.conf"
-      section: null
-      option: storeMgmtdDirectory
-      value: mgmtd-1
-      backup: yes
+    template:
+      src: "{{ template_dir }}/beegfs-mgmtd.conf"
+      dest: "{{ config_dir }}/beegfs-mgmtd-0.conf"
 
-    # log?
-        
-- hosts: storage_nodes[1:]
+  #####################
+  # BeeGFS Admon      #
+  #####################
+  - name: Template BeeGFS monitoring configuration file
+    template:
+      src: "{{ template_dir }}/beegfs-admon.conf"
+      dest: "{{ config_dir }}/beegfs-admon-0.conf"
+
+- hosts: storage_nodes
   gather_facts: False
+  vars:
+    # Global vars
+    host_idx: "{{ groups['storage_nodes'].index(inventory_hostname) }}"
   
+    # Metadata vars
+    meta_mgmtd_host: "{{ groups['storage_nodes'][0] }}"
+    meta_dir: "{{ first_disk }}/meta-{{ host_idx }}"
+    meta_port_tcp: "{{ host_idx|int + 8010 }}"
+    meta_port_udp: "{{ host_idx|int + 8010 }}"
+    meta_log_file: "{{ log_dir }}/beegfs-meta-{{ host_idx }}.log"
+
+    # Storage vars
+    storage_mgmtd_host: "{{ groups['storage_nodes'][0] }}"
+    storage_dir: "{{ first_disk }}/storage-{{ host_idx }}"
+
   tasks:
+  #####################
+  # BeeGFS Metadata   #
+  #####################
+  - name: Template BeeGFS metadata configuration file
+    template:
+      src: "{{ template_dir }}/beegfs-meta.conf"
+      dest: "{{ config_dir }}/beegfs-meta-{{ host_idx }}.conf"
+
+  #####################
+  # BeeGFS Storage    #
+  #####################
+  - name: Template BeeGFS storage configuration file
+    vars:
+      storage_port_tcp: "{{ host_idx|int + disk_idx|int + 8100 }}"
+      storage_port_udp: "{{ host_idx|int + disk_idx|int + 8100 }}"
+      storage_log_file: "{{ log_dir }}/beegfs-storage-{{ host_idx }}-{{ item.name }}.log"
+    template:
+      src: "{{ template_dir }}/beegfs-storage.conf"
+      dest: "{{ config_dir }}/beegfs-storage-{{ host_idx }}-{{ item.name }}.conf"
+    loop: "{{ disks }}"
+    loop_control:
+      index_var: disk_idx
+
+
   # Print out Sarus version
-  - name: load container runtime system
-    shell: module load {{ sarus_module }}; sarus --version
-    register: output
-  - debug: var=output.stdout_lines
+  # - name: load container runtime system
+  #   shell: module load {{ sarus_module }}; sarus --version
+  #   register: output
+  # - debug: var=output.stdout_lines
 
   # # Get hostname through a container
   # - name: get hostname
@@ -46,10 +102,18 @@
   #   setup:
   #     filter: 'ansible_devices'
   #   register: output
-  # - debug: var="{{ hostvars[inventory_hostname]['ansible_facts']['devices']['nvme0n1'] | to_nice_json }}"
+  # - debug: var="{{
+  # hostvars[inventory_hostname]['ansible_facts']['devices']['nvme0n1'] |
+  # to_nice_json }}"
+
+  # Get hostname
+  # - name: Get hostname
+  #   shell: hostname
+  #   register: output
+  # - debug: var=output.stdout_lines
 
   # Use inventory in playbook
-  - name: find mount points
-    shell: lsblk | grep {{ hostvars[inventory_hostname]['disk_0']['name'] }}
-    register: output
-  - debug: var=output.stdout_lines
+  # - name: find mount points
+  #   shell: lsblk | grep {{ hostvars[inventory_hostname]['disk_0']['name'] }}
+  #   register: output
+  # - debug: var=output.stdout_lines
