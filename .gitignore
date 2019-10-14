@@ -3,3 +3,5 @@
 \#*#
 ENV/*
 !ENV/VIRTUALENV
+playbooks/beegfs/configurations/*
+!playbooks/beegfs/configurations/README.md
