@@ -3,8 +3,6 @@
   gather_facts: False
 
   tasks:
-    #- set_fact: first_disk="{{
-    #hostvars[inventory_hostname]['disk_0']['mount_point'] }}"
      - set_fact: first_disk="{{ disks[0].mount_point }}"
      - set_fact: log_dir="{{ first_disk }}/log"
      - set_fact: template_dir="{{ root_dir }}/playbooks/beegfs/templates"
@@ -70,15 +68,15 @@
   #####################
   - name: Template BeeGFS storage configuration file
     vars:
-      storage_port_tcp: "{{ host_idx|int + disk_idx|int + 8100 }}"
-      storage_port_udp: "{{ host_idx|int + disk_idx|int + 8100 }}"
+      storage_port_tcp: "{{ host_idx|int * ansible_loop.length + ansible_loop.index0|int + 8100 }}"
+      storage_port_udp: "{{ host_idx|int * ansible_loop.length + ansible_loop.index0|int + 8100 }}"
       storage_log_file: "{{ log_dir }}/beegfs-storage-{{ host_idx }}-{{ item.name }}.log"
     template:
       src: "{{ template_dir }}/beegfs-storage.conf"
       dest: "{{ config_dir }}/beegfs-storage-{{ host_idx }}-{{ item.name }}.conf"
     loop: "{{ disks }}"
     loop_control:
-      index_var: disk_idx
+      extended: yes
 
 
   # Print out Sarus version
