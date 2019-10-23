@@ -101,7 +101,7 @@
       src: "{{ template_dir }}/beegfs-meta.conf"
       dest: "{{ meta_conf_file }}"
 
-  - name: Deploy containerized BeeGFS monitoring service
+  - name: Deploy containerized BeeGFS metadata service
     shell: "{{ sarus_base_cmd }}
            --mount=type=bind,source={{ meta_conf_file }},destination=/{{ meta_conf_filename }}
            {{ container }}
@@ -130,7 +130,7 @@
     loop_control:
       extended: yes
 
-  - name: Deploy containerized BeeGFS monitoring service
+  - name: Deploy containerized BeeGFS storage service
     vars:
       storage_name: "beegfs-storage-{{ host_idx }}-{{ item.name }}"
       storage_pid_file: "{{ item.mount_point }}/{{ storage_name }}.pid"
@@ -144,4 +144,4 @@
     loop_control:
       extended: yes
     register: output
-  - debug: var=output.stdout_lines    
+  - debug: var=output.results
