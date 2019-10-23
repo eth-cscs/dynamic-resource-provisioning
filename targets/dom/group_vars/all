@@ -2,6 +2,7 @@
 
 # Sarus: OCI-compliant container runtime for HPC
 sarus_module: /apps/dom/SI/modulefiles/sarus/1.0.0-rc7-78-g108944a-Release
+sarus_base_cmd: "module load {{ sarus_module }}; sarus run --entrypoint --mount=type=bind,bind-propagation=recursive,source=/mnt,destination=/mnt"
 
 # Absolute path of this current repo
 root_dir: /users/ftessier/dynamic-resource-provisioning
