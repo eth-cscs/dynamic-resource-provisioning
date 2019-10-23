@@ -3,49 +3,73 @@
   gather_facts: False
 
   tasks:
+     - set_fact: container="load/library/beegfs-server"
      - set_fact: first_disk="{{ disks[0].mount_point }}"
      - set_fact: log_dir="{{ first_disk }}/log"
      - set_fact: template_dir="{{ root_dir }}/playbooks/beegfs/templates"
      - set_fact: config_dir="{{ root_dir }}/playbooks/beegfs/configurations"
 
+#####################
+# Nodes 0 only      #
+#####################
 - hosts: storage_nodes[0]
   gather_facts: False
   vars:
     # Management vars
-    mgmtd_dir: "{{ first_disk }}/mgmtd-0"
-    mgmtd_log_file: "{{ log_dir }}/beegfs-mgmtd.log"
+    mgmtd_name: "beegfs-mgmtd-0"
+    mgmtd_dir: "{{ first_disk }}/{{ mgmtd_name }}"
+    mgmtd_log_file: "{{ log_dir }}/{{ mgmtd_name }}.log"
+    mgmtd_pid_file: "{{ first_disk }}/{{ mgmtd_name }}.pid"
+    mgmtd_conf_filename: "{{ mgmtd_name }}.conf"
+    mgmtd_conf_file: "{{ config_dir }}/{{ mgmtd_conf_filename }}"
+    mgmtd_daemonized: "false"
 
     # Monitoring vars
+    admon_name: "beegfs-admon-0"
     admon_mgmtd_host: "localhost"
-    admon_db_file: "{{ first_disk }}/admon-0/beegfs-admon.db"
-    admon_log_file: "{{ log_dir }}/beegfs-admon.log"
+    admon_db_file: "{{ first_disk }}/{{ admon_name }}/beegfs-admon.db"
+    admon_log_file: "{{ log_dir }}/{{ admon_name }}.log"
+    admon_pid_file: "{{ first_disk }}/{{ admon_name }}.pid"
+    admon_conf_filename: "{{ admon_name }}.conf"
+    admon_conf_file: "{{ config_dir }}/{{ admon_conf_filename }}"
+    admon_daemonized: "false"
     
   tasks:
-  #####################
-  # BeeGFS Management #
-  #####################
+  ########################
+  #  - BeeGFS Management #
+  ########################
   - name: Template BeeGFS management configuration file
     template:
       src: "{{ template_dir }}/beegfs-mgmtd.conf"
-      dest: "{{ config_dir }}/beegfs-mgmtd-0.conf"
+      dest: "{{ mgmtd_conf_file }}"
 
   - name: Deploy containerized BeeGFS management service
-    shell: module load {{ sarus_module }};
-           sarus run --entrypoint
-           --mount=type=bind,bind-propagation=recursive,source=/mnt,destination=/mnt
-           load/library/beegfs-server
-           bash -c 'hostname'
+    shell: "{{ sarus_base_cmd }}
+           --mount=type=bind,source={{ mgmtd_conf_file }},destination=/{{ mgmtd_conf_filename }}
+           {{ container }}
+           /opt/beegfs/sbin/beegfs-mgmtd cfgFile=/{{ mgmtd_conf_filename }} pidFile={{ mgmtd_pid_file }} &"
     register: output
   - debug: var=output.stdout_lines    
 
-  #####################
-  # BeeGFS Admon      #
-  #####################
+  ########################
+  #  - BeeGFS Admon      #
+  ########################
   - name: Template BeeGFS monitoring configuration file
     template:
       src: "{{ template_dir }}/beegfs-admon.conf"
-      dest: "{{ config_dir }}/beegfs-admon-0.conf"
+      dest: "{{ admon_conf_file }}"
+      
+  - name: Deploy containerized BeeGFS monitoring service
+    shell: "{{ sarus_base_cmd }}
+           --mount=type=bind,source={{ admon_conf_file }},destination=/{{ admon_conf_filename }}
+           {{ container }}
+           /opt/beegfs/sbin/beegfs-admon cfgFile=/{{ admon_conf_filename }} pidFile={{ admon_pid_file }} &"
+    register: output
+  - debug: var=output.stdout_lines    
 
+#####################
+# All nodes         #
+#####################
 - hosts: storage_nodes
   gather_facts: False
   vars:
@@ -53,15 +77,20 @@
     host_idx: "{{ groups['storage_nodes'].index(inventory_hostname) }}"
   
     # Metadata vars
+    meta_name: "beegfs-meta-{{ host_idx }}"
     meta_mgmtd_host: "{{ groups['storage_nodes'][0] }}"
-    meta_dir: "{{ first_disk }}/meta-{{ host_idx }}"
+    meta_dir: "{{ first_disk }}/{{ meta_name }}"
     meta_port_tcp: "{{ host_idx|int + 8010 }}"
     meta_port_udp: "{{ host_idx|int + 8010 }}"
-    meta_log_file: "{{ log_dir }}/beegfs-meta-{{ host_idx }}.log"
+    meta_log_file: "{{ log_dir }}/{{ meta_name }}.log"
+    meta_pid_file: "{{ first_disk }}/{{ meta_name }}.pid"
+    meta_conf_filename: "{{ meta_name }}.conf"
+    meta_conf_file: "{{ config_dir }}/{{ meta_conf_filename }}"
+    meta_daemonized: "false"
 
     # Storage vars
     storage_mgmtd_host: "{{ groups['storage_nodes'][0] }}"
-    storage_dir: "{{ first_disk }}/storage-{{ host_idx }}"
+    storage_daemonized: "false"
 
   tasks:
   #####################
@@ -70,19 +99,49 @@
   - name: Template BeeGFS metadata configuration file
     template:
       src: "{{ template_dir }}/beegfs-meta.conf"
-      dest: "{{ config_dir }}/beegfs-meta-{{ host_idx }}.conf"
+      dest: "{{ meta_conf_file }}"
+
+  - name: Deploy containerized BeeGFS monitoring service
+    shell: "{{ sarus_base_cmd }}
+           --mount=type=bind,source={{ meta_conf_file }},destination=/{{ meta_conf_filename }}
+           {{ container }}
+           /opt/beegfs/sbin/beegfs-meta cfgFile=/{{ meta_conf_filename }} pidFile={{ meta_pid_file }} &"
+    register: output
+  - debug: var=output.stdout_lines    
 
   #####################
   # BeeGFS Storage    #
   #####################
   - name: Template BeeGFS storage configuration file
     vars:
+      storage_name: "beegfs-storage-{{ host_idx }}-{{ item.name }}"
+      storage_dir: "{{ item.mount_point }}/{{ storage_name }}"
       storage_port_tcp: "{{ host_idx|int * ansible_loop.length + ansible_loop.index0|int + 8100 }}"
       storage_port_udp: "{{ host_idx|int * ansible_loop.length + ansible_loop.index0|int + 8100 }}"
-      storage_log_file: "{{ log_dir }}/beegfs-storage-{{ host_idx }}-{{ item.name }}.log"
+      storage_log_file: "{{ log_dir }}/{{ storage_name }}.log"
+      storage_pid_file: "{{ item.mount_point }}/{{ storage_name }}.pid"
+      storage_conf_filename: "{{ storage_name }}.conf"
+      storage_conf_file: "{{ config_dir }}/{{ storage_conf_filename }}"
+      
     template:
       src: "{{ template_dir }}/beegfs-storage.conf"
-      dest: "{{ config_dir }}/beegfs-storage-{{ host_idx }}-{{ item.name }}.conf"
+      dest: "{{ storage_conf_file }}"
     loop: "{{ disks }}"
     loop_control:
       extended: yes
+
+  - name: Deploy containerized BeeGFS monitoring service
+    vars:
+      storage_name: "beegfs-storage-{{ host_idx }}-{{ item.name }}"
+      storage_pid_file: "{{ item.mount_point }}/{{ storage_name }}.pid"
+      storage_conf_filename: "{{ storage_name }}.conf"
+      storage_conf_file: "{{ config_dir }}/{{ storage_conf_filename }}"
+    shell: "{{ sarus_base_cmd }}
+           --mount=type=bind,source={{ storage_conf_file }},destination=/{{ storage_conf_filename }}
+           {{ container }}
+           /opt/beegfs/sbin/beegfs-storage cfgFile=/{{ storage_conf_filename }} pidFile={{ storage_pid_file }} &"
+    loop: "{{ disks }}"
+    loop_control:
+      extended: yes
+    register: output
+  - debug: var=output.stdout_lines    
