@@ -10,6 +10,24 @@
      - set_fact: config_dir="{{ root_dir }}/playbooks/beegfs/configurations"
 
 #####################
+# All nodes         #
+#####################
+- hosts: storage_nodes
+  gather_facts: False
+  tasks:
+  - name: Erase all data
+    shell: "rm -rf {{ item.mount_point }}/*"
+    loop: "{{ disks }}"
+    loop_control:
+      extended: yes
+    register: output
+  - debug: var=output.results
+  - name: Create logging directory
+    shell: "mkdir {{ log_dir }}"
+    register: output
+  - debug: var=output.stdout_lines
+       
+#####################
 # Nodes 0 only      #
 #####################
 - hosts: storage_nodes[0]
@@ -130,6 +148,21 @@
     loop_control:
       extended: yes
 
+  - name: Set instance IDs to enable multi-mode
+    vars:
+      storage_name: "beegfs-storage-{{ host_idx }}-{{ item.name }}"
+      storage_id: "{{ ( host_idx|int + 1 ) * ( ansible_loop.length + 1 ) + ansible_loop.index0|int }}"
+      storage_dir: "{{ item.mount_point }}/{{ storage_name }}"
+    shell: "mkdir {{ storage_dir }};
+            echo {{ storage_id }} > {{ storage_dir }}/nodeNumID;
+            echo {{ storage_id }} > {{ storage_dir }}/targetNumID;
+            echo {{ storage_name }} > {{ storage_dir }}/nodeID;"
+    loop: "{{ disks }}"
+    loop_control:
+      extended: yes
+    register: output
+  - debug: var=output.results
+
   - name: Deploy containerized BeeGFS storage service
     vars:
       storage_name: "beegfs-storage-{{ host_idx }}-{{ item.name }}"
@@ -139,7 +172,9 @@
     shell: "{{ sarus_base_cmd }}
            --mount=type=bind,source={{ storage_conf_file }},destination=/{{ storage_conf_filename }}
            {{ container }}
-           /opt/beegfs/sbin/beegfs-storage cfgFile=/{{ storage_conf_filename }} pidFile={{ storage_pid_file }} &"
+           start-stop-daemon --start --user ftessier --chuid ftessier
+           --pidfile {{ storage_pid_file }} --exec /opt/beegfs/sbin/beegfs-storage
+           -- cfgFile=/{{ storage_conf_filename }} pidFile={{ storage_pid_file }} &"
     loop: "{{ disks }}"
     loop_control:
       extended: yes
