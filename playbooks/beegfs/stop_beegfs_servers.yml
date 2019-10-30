@@ -25,6 +25,7 @@
   #####################
   - name: Kill containerized BeeGFS metadata service
     shell: pkill -xf "/opt/beegfs/sbin/beegfs-meta cfgFile=/{{ meta_conf_filename }} pidFile={{ meta_pid_file }}"
+    ignore_errors: yes
     register: output
   - debug: var=output.stdout_lines    
 
@@ -37,6 +38,7 @@
       storage_pid_file: "{{ item.mount_point }}/{{ storage_name }}.pid"
       storage_conf_filename: "{{ storage_name }}.conf"
     shell: pkill -xf "/opt/beegfs/sbin/beegfs-storage cfgFile=/{{ storage_conf_filename }} pidFile={{ storage_pid_file }}"
+    ignore_errors: yes
     loop: "{{ disks }}"
     loop_control:
       extended: yes
@@ -65,6 +67,7 @@
   ########################
   - name: Kill containerized BeeGFS management service
     shell: pkill -xf "/opt/beegfs/sbin/beegfs-mgmtd cfgFile=/{{ mgmtd_conf_filename }} pidFile={{ mgmtd_pid_file }}"
+    ignore_errors: yes
     register: output
   - debug: var=output.stdout_lines    
 
@@ -73,5 +76,6 @@
   ########################
   - name: Kill containerized BeeGFS monitoring service
     shell: pkill -xf "/opt/beegfs/sbin/beegfs-admon cfgFile=/{{ admon_conf_filename }} pidFile={{ admon_pid_file }}"
+    ignore_errors: yes
     register: output
   - debug: var=output.stdout_lines    
