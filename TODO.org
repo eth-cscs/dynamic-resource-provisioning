@@ -1,0 +1,9 @@
+* Deployment script
+
+* Ansible global configuration
+
+* Data managers
+
+** BeeGFS
+- BeeGFS scripts (/opt/beegfs/etc...) as variables in tasks
+- 
