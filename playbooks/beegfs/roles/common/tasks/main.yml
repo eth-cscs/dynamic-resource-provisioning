@@ -1,0 +1,11 @@
+- name: Erase all data
+  shell: "rm -rf {{ item.mount_point }}/*"
+  loop: "{{ disks }}"
+  loop_control:
+    extended: yes
+  register: output
+- debug: var=output.results
+- name: Create logging directory
+  shell: "mkdir {{ log_dir }}"
+  register: output
+- debug: var=output.stdout_lines

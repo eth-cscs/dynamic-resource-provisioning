@@ -1,0 +1,2 @@
+storage_mgmtd_host: "{{ groups['storage_nodes'][0] }}"
+storage_daemonized: "false"

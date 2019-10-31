@@ -1,0 +1,8 @@
+admon_name: "beegfs-admon-0"
+admon_mgmtd_host: "localhost"
+admon_db_file: "{{ first_disk }}/{{ admon_name }}/beegfs-admon.db"
+admon_log_file: "{{ log_dir }}/{{ admon_name }}.log"
+admon_pid_file: "{{ first_disk }}/{{ admon_name }}.pid"
+admon_conf_filename: "{{ admon_name }}.conf"
+admon_conf_file: "{{ config_dir }}/{{ admon_conf_filename }}"
+admon_daemonized: "false"
