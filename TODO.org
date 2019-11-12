@@ -6,4 +6,4 @@
 
 ** BeeGFS
 - BeeGFS scripts (/opt/beegfs/etc...) as variables in tasks
-- 
+- Move client_mount_point from roles/client/vars to make is a user-defined variable
