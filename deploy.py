@@ -1,51 +1,48 @@
 #!ENV/bin/python
 
+activate_this = "/users/ftessier/dynamic-resource-provisioning/ENV/bin/activate_this.py"
+execfile(activate_this, dict(__file__=activate_this))
+
 import os
 import sys
+import io
 import subprocess
 import hostlist
-import configparser
-from ansible.parsing.dataloader import DataLoader
-from ansible.inventory.manager import InventoryManager
-from ansible.vars.manager import VariableManager
-from ansible.executor.playbook_executor import PlaybookExecutor
+import yaml
 
 # Global variables
-target   = 'targets/dom/storage_nodes.ini'
+target   = 'targets/dom/storage_nodes.yml'
 section  = 'storage_nodes'
-playbook = 'playbooks/beegfs/beegfs_server.yml'
-
-def empty_section (config, section):
-    config.remove_section (section)
-    config.add_section (section)
-    return config
+playbook = 'playbooks/beegfs/start_beegfs_servers.yml'
 
 def main (argv):
     global section
-    scheduler_nodelist = 'nid000[52-53]'
-    # scheduler_nodelist = os.environ['SLURM_JOB_NODELIST']
+    try:
+        scheduler_nodelist = os.environ['SLURM_JOB_NODELIST']
+        #scheduler_nodelist = 'nid000[52-53]'
+    except KeyError:
+        print ("[ERR] SLURM_JOB_NODELIST environment variable does not exist.")
+        
     nodes_list = hostlist.expand_hostlist (scheduler_nodelist)
 
     # Load inventory file
-    config = configparser.ConfigParser (allow_no_value=True)
-
     if not os.path.exists (target):
         print ('[ERR] Cannot find this inventory: '+target)
         sys.exit()
-        
-    config_file = open (target)
-    config.read_file (config_file)
-    config_file.close ()
 
-    # Empty storage nodes section and repopulate it with allocated nodes
-    config = empty_section (config, section)
+    inventory_stream = open (target, 'r')
+    inventory = yaml.safe_load (inventory_stream)
+    inventory_stream.close ()
+
+    for node, v in inventory['all']['children']['storage_nodes']['hosts'].items():
+        del inventory['all']['children']['storage_nodes']['hosts'][node]
 
     for node in nodes_list:
-        config.set (section, node)
-
-    config_file = open (target, 'w')
-    config.write (config_file, space_around_delimiters=False)
-    config_file.close
+        inventory['all']['children']['storage_nodes']['hosts'][node] = None
+        
+    with io.open(target, 'w', encoding='utf8') as inventory_stream:
+        yaml.dump(inventory, inventory_stream, default_flow_style=False, allow_unicode=True)
+    inventory_stream.close ()
 
     print ("[INFO] New inventory file generated with "+str(len(nodes_list))+" hosts in the "+section+" section")
 
