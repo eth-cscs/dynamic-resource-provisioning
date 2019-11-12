@@ -9,3 +9,5 @@ root_dir: /users/ftessier/dynamic-resource-provisioning
 
 # Tools
 kill_cmd: "pkill -xf -9"
+mount_cmd: "/usr/bin/mount"
+umount_cmd: "/usr/bin/umount"

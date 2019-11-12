@@ -1,0 +1,10 @@
+all:
+  children:
+    master:
+      hosts:
+        dom101:
+          ansible_connection: ssh
+    compute_nodes:
+      hosts:
+        nid00404: null
+  hosts: null

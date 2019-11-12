@@ -1,0 +1,12 @@
+---
+#####################
+# All nodes         #
+#####################
+- hosts: compute_nodes
+  gather_facts: False
+
+  #####################
+  # BeeGFS Client     #
+  #####################
+  roles:
+    - client
