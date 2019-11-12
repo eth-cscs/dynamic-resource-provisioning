@@ -1,5 +1,4 @@
 all:
-  hosts:
   children:
     master:
       hosts:
@@ -7,22 +6,25 @@ all:
           ansible_connection: ssh
     storage_nodes:
       hosts:
-        nid00052:
-        nid00053:
+        nid00052: null
+        nid00053: null
+        nid00054: null
+        nid00055: null
       vars:
         disks:
-        - name: nvme0n1
-          size: 5.9T
-          vendor: SAMSUNG
-          model: MZPLL6T4HMLS-00003
+        - model: MZPLL6T4HMLS-00003
           mount_point: /mnt/nvme0n1
-        - name: nvme1n1
+          name: nvme0n1
           size: 5.9T
           vendor: SAMSUNG
-          model: MZPLL6T4HMLS-00003
+        - model: MZPLL6T4HMLS-00003
           mount_point: /mnt/nvme1n1
-        - name: nvme2n1
+          name: nvme1n1
           size: 5.9T
           vendor: SAMSUNG
-          model: MZPLL6T4HMLS-00003
+        - model: MZPLL6T4HMLS-00003
           mount_point: /mnt/nvme2n1
+          name: nvme2n1
+          size: 5.9T
+          vendor: SAMSUNG
+  hosts: null
