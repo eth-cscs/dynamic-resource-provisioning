@@ -40,9 +40,7 @@
   shell: "{{ sarus_base_cmd }}
           --mount=type=bind,source={{ storage_conf_file }},destination=/{{ storage_conf_filename }}
           {{ container }}
-          start-stop-daemon --start --user ftessier --chuid ftessier
-          --pidfile {{ storage_pid_file }} --exec /opt/beegfs/sbin/beegfs-storage
-          -- cfgFile=/{{ storage_conf_filename }} pidFile={{ storage_pid_file }} &"
+          /opt/beegfs/sbin/beegfs-storage cfgFile=/{{ storage_conf_filename }} pidFile={{ storage_pid_file }} &"
   loop: "{{ disks }}"
   loop_control:
     extended: yes
