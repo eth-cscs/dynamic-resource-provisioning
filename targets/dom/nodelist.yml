@@ -27,4 +27,8 @@ all:
           name: nvme2n1
           size: 5.9T
           vendor: SAMSUNG
+    compute_nodes:
+      hosts:
+        nid00406: null
+        nid00407: null
   hosts: null

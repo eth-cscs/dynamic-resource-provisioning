@@ -11,7 +11,7 @@ import hostlist
 import yaml
 
 # Global variables
-target   = 'targets/dom/storage_nodes.yml'
+target   = 'targets/dom/nodelist.yml'
 section  = 'storage_nodes'
 playbook = 'playbooks/beegfs/start_beegfs_servers.yml'
 
