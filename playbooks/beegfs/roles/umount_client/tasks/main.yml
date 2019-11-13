@@ -1,0 +1,5 @@
+- name: Umount BeeGFS on the compute node
+  shell: "sudo {{ umount_cmd }} -t beegfs -l
+          {{ client_mount_point }}"
+  register: output
+- debug: var=output.stdout_lines
