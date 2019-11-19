@@ -1,55 +1,98 @@
 #!ENV/bin/python
 
-activate_this = "/users/ftessier/dynamic-resource-provisioning/ENV/bin/activate_this.py"
+import os
+
+dsrp_root_dir = os.path.dirname(os.path.realpath(__file__))
+activate_this = dsrp_root_dir+"/ENV/bin/activate_this.py"
 execfile(activate_this, dict(__file__=activate_this))
 
-import os
 import sys
 import io
+import argparse
 import subprocess
 import hostlist
 import yaml
 
-# Global variables
-target   = 'targets/dom/nodelist.yml'
-section  = 'storage_nodes'
-playbook = 'playbooks/beegfs/start_beegfs_servers.yml'
+def parse_dsrp_config (dsrp_config_file):
+    dsrp_config_stream = open (dsrp_config_file, 'r')
+    dsrp_config = yaml.safe_load (dsrp_config_stream)
+    dsrp_config_stream.close ()
+    return dsrp_config
 
-def main (argv):
-    global section
-    try:
-        scheduler_nodelist = os.environ['SLURM_JOB_NODELIST']
-        #scheduler_nodelist = 'nid000[52-53]'
-    except KeyError:
-        print ("[ERR] SLURM_JOB_NODELIST environment variable does not exist.")
+
+def parse_args ():
+    dsrp_config = None
+    parser = argparse.ArgumentParser ()
+    parser.add_argument ("dsrp_config", help="Path of file containing DSRP configuration")
+    args = parser.parse_args()
+    if args.dsrp_config:
+        if not os.path.exists (args.dsrp_config):
+            print (__file__+': error: DSRP configuration file does not exist!')
+            sys.exit()
+        dsrp_config = parse_dsrp_config (args.dsrp_config)
         
-    nodes_list = hostlist.expand_hostlist (scheduler_nodelist)
+    return dsrp_config
 
-    # Load inventory file
-    if not os.path.exists (target):
-        print ('[ERR] Cannot find this inventory: '+target)
+
+def get_env_var (env_var_name):
+    try:
+        env_var = os.environ[env_var_name]
+    except KeyError:
+        print ("[ERR] "+env_var_name+" environment variable does not exist.")
+        sys.exit()
+    return env_var
+
+
+def read_inventory_file (inventory_file):
+    if not os.path.exists (inventory_file):
+        print ('[ERR] Cannot find this inventory: '+inventory_file)
         sys.exit()
 
-    inventory_stream = open (target, 'r')
+    inventory_stream = open (inventory_file, 'r')
     inventory = yaml.safe_load (inventory_stream)
     inventory_stream.close ()
+
+    return inventory
+
+
+def set_storage_inventory (dsrp_config, inventory):
+    scheduler_nodelist = get_env_var (dsrp_config['resources']['storage_nodes']['scheduler_nodelist_env'])
+    storage_nodelist   = hostlist.expand_hostlist (scheduler_nodelist)
 
     for node, v in inventory['all']['children']['storage_nodes']['hosts'].items():
         del inventory['all']['children']['storage_nodes']['hosts'][node]
 
-    for node in nodes_list:
+    for node in storage_nodelist:
         inventory['all']['children']['storage_nodes']['hosts'][node] = None
+
+    return inventory
+
         
-    with io.open(target, 'w', encoding='utf8') as inventory_stream:
-        yaml.dump(inventory, inventory_stream, default_flow_style=False, allow_unicode=True)
-    inventory_stream.close ()
+def main (argv):
+    global dsrp_root_dir
+    dsrp_config = parse_args ()
 
-    print ("[INFO] New inventory file generated with "+str(len(nodes_list))+" hosts in the "+section+" section")
+    inventory_file = (dsrp_root_dir+'/targets/'+
+                      dsrp_config['resources']['system']+'/'+
+                      dsrp_config['resources']['inventory_file'])
+                     
+    inventory = read_inventory_file (inventory_file)
+    inventory = set_storage_inventory (dsrp_config, inventory)
+        
+    # Load inventory file
+    
+    job_nodelist_file = os.path.dirname(inventory_file)+'/job_nodelist.yml'
+    
+    with io.open(job_nodelist_file, 'w', encoding='utf8') as job_nodelist_stream:
+        yaml.dump(inventory, job_nodelist_stream, default_flow_style=False, allow_unicode=True)
+    job_nodelist_stream.close ()
 
-    # Run Ansible Playbook
-    p = subprocess.Popen (['ansible-playbook',
-                           '-i', target,
-                           playbook])
+    # print ("[INFO] New inventory file generated with "+str(len(nodes_list))+" hosts in the storage_nodes section")
+
+    # # Run Ansible Playbook
+    # # p = subprocess.Popen (['ansible-playbook',
+    # #                        '-i', target,
+    # #                        playbook])
     
 if __name__ == "__main__":
     main (sys.argv[1:])
