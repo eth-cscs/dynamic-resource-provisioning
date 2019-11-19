@@ -2,18 +2,13 @@ all:
   children:
     compute_nodes:
       hosts:
-        nid00406: null
-        nid00407: null
     master:
       hosts:
         dom101:
           ansible_connection: ssh
     storage_nodes:
       hosts:
-        nid00052: null
-        nid00053: null
-        nid00054: null
-        nid00055: null
+        nid000[52-55]: null
       vars:
         disks:
         - model: MZPLL6T4HMLS-00003
