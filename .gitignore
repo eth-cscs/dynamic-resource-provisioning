@@ -7,4 +7,4 @@ slurm-*
 playbooks/beegfs/configurations/*
 !playbooks/beegfs/configurations/README.md
 scheduler/slurm/firecrest
-job_nodelist.yml
+job_inventory.yml
