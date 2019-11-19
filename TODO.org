@@ -1,9 +1,14 @@
 * Deployment script
-
+  
 * Ansible global configuration
-
+  
 * Data managers
 
 ** BeeGFS
+- Dynamically create inventory file with groups per service. Meta-nodes,
+  storage-nodes, etc...
 - BeeGFS scripts (/opt/beegfs/etc...) as variables in tasks
-- Move client_mount_point from roles/client/vars to make is a user-defined variable
+- Move client_mount_point from roles/client/vars to make it a user-defined variable
+- Change "sarus_*" to "container_runtime_*"
+- Fix version of BeeGFS instead of the latest one : add Dockerfile argument
+  (--build_args)
