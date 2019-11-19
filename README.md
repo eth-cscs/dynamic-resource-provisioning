@@ -7,7 +7,7 @@ Step 1: install `virtualenv` and create a new environment
 ``` shell
 pip install --user virtualenv
 mkdir ENV
-virtualenv ENV
+virtualenv -p python3 ENV
 ```
 
 Step 2: install the latest version of `ansible` in the virtual environment
@@ -22,7 +22,7 @@ Step 3: every time ansible has to be used, it is necessary to "load" the
 virtual environment
 
 ``` shell
-virtualenv ENV
+virtualenv -p python3 ENV
 source ./ENV/bin/activate
 ```
 
