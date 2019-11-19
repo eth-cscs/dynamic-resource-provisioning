@@ -2,33 +2,38 @@
 
 import os
 import io
+import sys
 import yaml
 import hostlist
 
 class DSRPInventory (object):
 
-    def __init__(self):
+    def __init__(self, root_dir, system, filename, job_id):
         super().__init__()
-        self._inventory_file = ''
-        self._inventory_content = dict ()
-        self._inventory_job_file = ''
-
-        
-    def load_inventory (self, root_dir, system, filename):
         inventory_file = root_dir+'/targets/'+system+'/'+filename
-
+        
         if not os.path.exists (inventory_file):
             print (__file__+': error: Inventory file does not exist! ('+inventory_file+')')
             sys.exit (2)
-
+            
         self._inventory_file = inventory_file
         stream = open (self._inventory_file, 'r')
         self._inventory_content = yaml.safe_load (stream)
         stream.close ()
-
+        self.set_job_inventory_file (job_id)
+        
     
     def get_inventory_file (self):
         return self._inventory_file
+
+
+    def set_job_inventory_file (self, job_id):
+        #self._inventory_job_file = os.path.dirname(self._inventory_file)+'/inventory_'+str(job_id)+'.yml'
+        self._inventory_job_file = os.path.dirname(self._inventory_file)+'/job_inventory.yml'
+
+        
+    def get_job_inventory_file (self):
+        return self._inventory_job_file
 
     
     def get_inventory_content (self):
@@ -37,14 +42,22 @@ class DSRPInventory (object):
     
     def set_storage_nodelist (self, nodelist):
         nodelist_expanded = hostlist.expand_hostlist (nodelist)
-        self._inventory_content['all']['children']['storage_nodes']['hosts'].clear ()
+        self._inventory_content['all']['children']['storage_nodes']['hosts'] = {}
 
         for node in nodelist_expanded:
             self._inventory_content['all']['children']['storage_nodes']['hosts'][node] = None
 
+            
+    def set_compute_nodelist (self, nodelist):
+        nodelist_expanded = hostlist.expand_hostlist (nodelist)
+        self._inventory_content['all']['children']['compute_nodes']['hosts'] = {}
 
-    def write_job_inventory (self):
-        self._inventory_job_file = os.path.dirname(self._inventory_file)+'/job_inventory.yml'
+        for node in nodelist_expanded:
+            self._inventory_content['all']['children']['compute_nodes']['hosts'][node] = None
+
+
+    def write_job_inventory (self, job_id):
+        self.set_job_inventory_file (job_id)
         
         if self._inventory_file == self._inventory_job_file:
             print (__file__+': error: Cannot overwrite inventory file!')
@@ -54,4 +67,4 @@ class DSRPInventory (object):
             yaml.dump(self._inventory_content, inventory_job_stream, default_flow_style=False, allow_unicode=True)
             
         inventory_job_stream.close ()    
-        
+        return self._inventory_job_file

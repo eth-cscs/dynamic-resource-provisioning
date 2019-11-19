@@ -1,11 +1,14 @@
+dsrp:
+  root_dir: /users/ftessier/dynamic-resource-provisioning
 resources:
   system: dom
-  inventory_file: nodelist.yml
-  storage_nodes:
-    scheduler_nodelist_env: SLURM_JOB_NODELIST
-    disks_per_node: 3
+  job_id_env: SLURM_JOB_ID
+  inventory_file: inventory.yml
   compute_nodes:
-    scheduler_nodelist_env: SLURM_JOB_NODELIST
+    scheduler_nodelist_env: SLURM_NODELIST_PACK_GROUP_0
+  storage_nodes:
+    scheduler_nodelist_env: SLURM_NODELIST_PACK_GROUP_1
+    disks_per_node: 3
 data_manager:
   type: beegfs
   server:
