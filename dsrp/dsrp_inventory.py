@@ -28,9 +28,8 @@ class DSRPInventory (object):
 
 
     def set_job_inventory_file (self, job_id):
-        #self._inventory_job_file = os.path.dirname(self._inventory_file)+'/inventory_'+str(job_id)+'.yml'
-        self._inventory_job_file = os.path.dirname(self._inventory_file)+'/job_inventory.yml'
-
+        self._inventory_job_file = os.path.dirname(self._inventory_file)+'/inventory_'+str(job_id)+'.yml'
+        
         
     def get_job_inventory_file (self):
         return self._inventory_job_file
