@@ -1,7 +1,7 @@
 all:
   children:
     compute_nodes:
-      hosts:
+      hosts: null
     master:
       hosts:
         dom101:
