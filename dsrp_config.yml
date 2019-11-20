@@ -9,6 +9,23 @@ resources:
   storage_nodes:
     scheduler_nodelist_env: SLURM_NODELIST_PACK_GROUP_1
     disks_per_node: 3
+    subgroups:
+      mgmtd_nodes:
+        node_exclusive: False
+        disk_exclusive: False
+        distribution: 1,1
+      admon_nodes:
+        node_exclusive: False
+        disk_exclusive: False
+        distribution: 1,1
+      meta_nodes:
+        node_exclusive: False
+        disk_exclusive: False
+        distribution: n,1
+      storage_nodes:
+        node_exclusive: False
+        disk_exclusive: False
+        distribution: n,d
 data_manager:
   type: beegfs
   server:
