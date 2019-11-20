@@ -23,7 +23,11 @@ DSRP.
 
 ## Requirements
 
-### Install Ansible and python packages without root acccess
+  * Python 3
+  * Ansible 2.x.x
+  * python-hostlist
+
+### Install recent Ansible and python packages without root acccess
 
 DSRP requires a quite recent version of Ansible installed on the HPC system's
 login nodes. In case your version of Ansible is too old (<2.x.x), it is
@@ -48,36 +52,14 @@ storage resources dynamically loads this virtual environment.
 
 ## Using DSRP
 
-### Heterogenous allocation
-
-
-SLURM can do that (https://slurm.schedmd.com/heterogeneous_jobs.html). The
-following examples will use SLURM to illustrate how to use DSRP.
-
-For an interactive session:
-
-``` shel
-salloc -N2 -C mc -t 02:00:00 : -N2 -C storage
-```
-
-An example using a batch script will follow.
-
-``` shell
-#!/bin/bash
-
-# sbatch -N1 -n1 -C mc : -N1 -n1 -C gpu ./dyn_pro.sh
-
-deploy start config
-#srun --label --pack-group=0 hostname && date +%s.%N && sleep 30
-#srun --label --pack-group=1 hostname && date +%s.%N && sleep 120
-deploy stop config
-```
-
 ### DSRP configuration file
 
-It is the heart of our tool. An example using a small-scale development
-platform based on Piz Daint, our XC50 supercomputer, and BeeGFS, a parallel
-file system, as a data manager is shown below:
+As shown on the figure above, the DSRP tool takes as input a configuration
+file describing how to access storage resources and how to deploy the needed
+data manager. An example using a small-scale development platform based on [Piz
+Daint](https://www.cscs.ch/computers/piz-daint/), our XC50 supercomputer at,
+and [BeeGFS](https://www.beegfs.io/content/), a parallel file system, as a
+data manager is shown below: 
 
 ``` yaml
 dsrp:
@@ -101,7 +83,69 @@ data_manager:
     stop: umount_beegfs_clients.yml
 ```
 
+### Heterogenous allocation
+
+We will focus here on a case where two allocations are required: one with
+intermediate storage nodes and one with compute nodes. There are different
+ways to get two allocations running in parallel. The most convenient one is
+called "heterogeneous allocation". A job scheduler like
+[SLURM](https://slurm.schedmd.com/heterogeneous_jobs.html) can do that. It
+consists of requesting all the resources in a single call. This can be done
+through an interactive session (`salloc` with SLURM) or be means of a batch
+script (submitted with `sbatch` for instance). The following examples, based
+on SLURM, illustrates how to get an heterogeneous allocation. It has to be
+noted that storage nodes have to be allocatable (See
+[1](http://www.francoistessier.info/documents/CUG2019.pdf)).
+
+#### Interactive session
+
+Here, two dependent allocations are requested: 128 computes nodes on the
+multicore queue (mc) and 2 storage nodes each featuring SSDs.
+
+``` shell
+user@login-mode:~$ salloc -N128 -C mc -t 02:00:00 : -N2 -C storage
+user@login-mode:~$ <DSRP_root_dir>/dsrp_deploy.py start dsrp_config.yml
+user@login-mode:~$ srun <my_app>
+user@login-mode:~$ <DSRP_root_dir>/dsrp_deploy.py stop dsrp_config.yml
+```
+
+#### With a batch script
+
+Another way to get heterogeneous allocation is to use a batch script. In a
+sense, it is very similar to how an interactive allocation can be assigned.
+
+``` shell
+#!/bin/bash
+#SBATCH --job-name=dsrp
+#SBATCH --time=02:00:00
+#SBATCH --partition=normal
+#SBATCH --nodes=128
+#SBATCH --ntasks-per-core=1
+#SBATCH --ntasks-per-node=12
+#SBATCH --constraint=mc
+#SBATCH packjob
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-core=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --constraint=storage
+
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$SLURM_JOB_NODELIST_PACK_GROUP_1" <DSRP_root_dir>/dsrp_deploy.py start dsrp_config.yml
+
+srun --label --pack-group=0 <my_app>
+
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$SLURM_JOB_NODELIST_PACK_GROUP_1" <DSRP_root_dir>/dsrp_deploy.py stop dsrp_config.yml
+```
+
+Then:
+
+``` shell
+sbatch <my_batch_script>
+```
+
 ### Starting servers and clients
+
+The previous section introduced the two main commands used to start and stop
+servers. Below is the output of `dsrp_deploy.py -h`:
 
 ``` shell
 usage: dsrp_deploy.py [-h] {start,stop} config_file
