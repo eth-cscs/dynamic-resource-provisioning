@@ -37,7 +37,7 @@
     storage_pid_file: "{{ item.mount_point }}/{{ storage_name }}.pid"
     storage_conf_filename: "{{ storage_name }}.conf"
     storage_conf_file: "{{ config_dir }}/{{ storage_conf_filename }}"
-  shell: "{{ sarus_base_cmd }}
+  shell: "{{ container_run }}
           --mount=type=bind,source={{ storage_conf_file }},destination=/{{ storage_conf_filename }}
           {{ container }}
           /opt/beegfs/sbin/beegfs-storage cfgFile=/{{ storage_conf_filename }} pidFile={{ storage_pid_file }} &"

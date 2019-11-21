@@ -3,7 +3,7 @@
     minio_access_key: "IiaFsQIpRM"
     minio_secret_key: "gQbENgqvagxFt59j4U46m4dwL83kBQmf"
     
-  shell: "{{ sarus_base_cmd }}
+  shell: "{{ container_run }}
           {{ container }}
           server
           {% for d in disks %}

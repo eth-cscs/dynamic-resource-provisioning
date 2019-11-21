@@ -1,8 +1,9 @@
 # The global variable file for container-based dynamic resource provisioning
 
 # Sarus: OCI-compliant container runtime for HPC
-sarus_module: sarus
-sarus_base_cmd: "module load {{ sarus_module }}; sarus run --mount=type=bind,bind-propagation=recursive,source=/mnt,destination=/mnt"
+container_runtime_module: sarus
+container_runtime_cmd: "module load {{ container_module }}; sarus run"
+container_runtime_mnt: "--mount=type=bind,bind-propagation=recursive,source=/mnt,destination=/mnt"
 
 # Absolute path of this current repo
 root_dir: /users/ftessier/dynamic-resource-provisioning

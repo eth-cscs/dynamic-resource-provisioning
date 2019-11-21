@@ -3,11 +3,12 @@
   gather_facts: False
 
   tasks:
-     - set_fact: container="load/library/beegfs-server"
      - set_fact: first_disk="{{ disks[0].mount_point }}"
      - set_fact: log_dir="{{ first_disk }}/log"
      - set_fact: template_dir="{{ root_dir }}/playbooks/beegfs/templates"
      - set_fact: config_dir="{{ root_dir }}/playbooks/beegfs/configurations"
+     - set_fact: container_run="{{ container_runtime_cmd }} --entrypoint {{ container_runtime_mnt }}"
+     - set_fact: container="load/library/beegfs-server"
 
 #####################
 # All nodes         #

@@ -9,7 +9,6 @@
   storage-nodes, etc...
 - BeeGFS scripts (/opt/beegfs/etc...) as variables in tasks
 - Move client_mount_point from roles/client/vars to make it a user-defined variable
-- Change "sarus_*" to "container_runtime_*"
 - Fix version of BeeGFS instead of the latest one : add Dockerfile argument
   (--build_args)
 
