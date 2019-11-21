@@ -26,6 +26,8 @@ DSRP.
   * Python 3
   * Ansible 2.x.x
   * python-hostlist
+  * A container engine for HPC (see
+    [Sarus](https://sarus.readthedocs.io/en/latest/)) 
 
 ### Install recent Ansible and python packages without root acccess
 
