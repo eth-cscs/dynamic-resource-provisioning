@@ -1,0 +1,11 @@
+---
+- hosts: storage_nodes
+  gather_facts: False
+
+  tasks:
+    - set_fact: container="minio/minio"
+
+- hosts: storage_nodes
+  gather_facts: False
+  roles:
+    - start_server

@@ -12,3 +12,7 @@
 - Change "sarus_*" to "container_runtime_*"
 - Fix version of BeeGFS instead of the latest one : add Dockerfile argument
   (--build_args)
+
+** MinIO
+- Auto-generate keys (access, secret)
+- 
