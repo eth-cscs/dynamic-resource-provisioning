@@ -8,10 +8,10 @@ exec(open(activate_this, 'r').read(), dict(__file__=activate_this))
 
 import sys
 import argparse
-from dsrp.common import get_env_var
-from dsrp.dsrp_config import DSRPConfig
-from dsrp.dsrp_inventory import DSRPInventory
-from dsrp.dsrp_playbook import DSRPPlaybook
+from dsrp.src.common import get_env_var
+from dsrp.src.dsrp_config import DSRPConfig
+from dsrp.src.dsrp_inventory import DSRPInventory
+from dsrp.src.dsrp_playbook import DSRPPlaybook
 
 dsrp_config = DSRPConfig ()
 
