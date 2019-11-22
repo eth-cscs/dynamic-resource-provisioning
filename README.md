@@ -172,3 +172,14 @@ Please note that, by default, SLURM runs the application on the first pack
 (index 0) of the allocated nodes. Thus, it shouldn't be necessary to
 explicitely set the node list using the `SLURM_NODELIST_PACK_GROUP_0`
 environment variable. 
+
+## Supported Data Managers
+
+### BeeGFS, Parallel File System
+
+### MinIO, High-Performance Object Storage
+
+``` shell
+sarus pull minio/minio
+sarus pull minio/mc
+```

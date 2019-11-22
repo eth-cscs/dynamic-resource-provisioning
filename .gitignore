@@ -9,3 +9,4 @@ playbooks/beegfs/configurations/*
 scheduler/slurm/firecrest
 job_inventory.yml
 __pycache__
+inventory_*.yml
