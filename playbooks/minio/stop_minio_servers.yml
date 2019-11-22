@@ -1,0 +1,12 @@
+---
+- hosts: storage_nodes
+  gather_facts: False
+
+  tasks:
+    - set_fact: container_run="{{ container_runtime_cmd }} --entrypoint {{ container_runtime_mnt }}"
+    - set_fact: container="minio/mc"
+
+- hosts: storage_nodes[0]
+  gather_facts: False
+  roles:
+    - stop_server
