@@ -2,6 +2,9 @@
   
 * Ansible global configuration
   
+- Run tools stopping servers from the login node. No need to ssh the first
+  storage node to run it.
+
 * Data managers
 
 ** BeeGFS
@@ -11,7 +14,16 @@
 - Move client_mount_point from roles/client/vars to make it a user-defined variable
 - Fix version of BeeGFS instead of the latest one : add Dockerfile argument
   (--build_args)
+- Use containerized BeeGFS tool (beegfs-ctl ?) to stop all the services
+  instead of killing them
 
 ** MinIO
 - Auto-generate keys (access, secret)
 - 
+
+** Cassandra
+- Autogenerate username/password for improved security
+- Add a task to sleep during the joining process (30000 ms according to the
+  log)
+- Clean up YAML files. Too many hard-coded values
+

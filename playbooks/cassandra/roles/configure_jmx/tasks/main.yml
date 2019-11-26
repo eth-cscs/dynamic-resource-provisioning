@@ -1,0 +1,9 @@
+- name: Template Cassandra master node JMX password
+  vars:
+    c_username: "cassandra"
+    c_password: "cassandra"
+    cassandra_auth_filename: "jmxremote.password"
+    cassandra_auth_file: "{{ config_dir }}/{{ cassandra_auth_filename }}"
+  template:
+    src: "{{ template_dir }}/{{ cassandra_auth_filename }}"
+    dest: "{{ cassandra_auth_file }}"
