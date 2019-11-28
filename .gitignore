@@ -4,10 +4,12 @@
 ENV/*
 slurm-*
 !ENV/VIRTUALENV
-playbooks/beegfs/configurations/*
-playbooks/cassandra/configurations/*
-!playbooks/beegfs/configurations/README.md
-scheduler/slurm/firecrest
-job_inventory.yml
 __pycache__
+
+playbooks/beegfs/configurations/*
+!playbooks/beegfs/configurations/README.md
+
+playbooks/cassandra/configurations/*
+!playbooks/cassandra/configurations/README.md
+
 inventory_*.yml

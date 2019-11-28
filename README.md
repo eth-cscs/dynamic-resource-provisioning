@@ -183,3 +183,5 @@ environment variable.
 sarus pull minio/minio
 sarus pull minio/mc
 ```
+
+### Cassandra, Highly Scalable Database

@@ -13,7 +13,7 @@ class DSRPPlaybook (object):
             self._playbook = None
         else:
             if not os.path.exists (playbook_file):
-                print (__file__+': error: Playbook does not exist! ('+inventory_file+')')
+                print (__file__+': error: Playbook does not exist! ('+playbook_file+')')
                 sys.exit (2)
             self._playbook = playbook_file
         self._target = ''
