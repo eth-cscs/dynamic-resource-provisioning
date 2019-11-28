@@ -1,0 +1,12 @@
+- name: Kill containerized BeeGFS storage service
+  vars:
+    storage_name: "beegfs-storage-{{ host_idx }}-{{ item.name }}"
+    storage_pid_file: "{{ item.mount_point }}/{{ storage_name }}.pid"
+    storage_conf_filename: "{{ storage_name }}.conf"
+  shell: pkill -xf "/opt/beegfs/sbin/beegfs-storage cfgFile=/{{ storage_conf_filename }} pidFile={{ storage_pid_file }}"
+  ignore_errors: yes
+  loop: "{{ disks }}"
+  loop_control:
+    extended: yes
+  register: output
+- debug: var=output.stdout_lines

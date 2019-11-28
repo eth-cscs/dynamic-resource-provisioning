@@ -51,3 +51,10 @@ To get the status of the Cassandra cluster, it is possible to use the
 $ module load sarus
 $ sarus run cassandra nodetool -pw cassandra -u cassandra -p 7199 -h nid000XX status
 ```
+
+A benchmarking tool is also available to load test a Cassandra cluster (TO
+FIX. User mode profile):
+
+```shell
+sarus run cassandra cassandra-stress mixed -node nid00052
+```

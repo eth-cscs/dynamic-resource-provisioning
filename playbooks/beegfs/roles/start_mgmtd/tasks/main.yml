@@ -7,6 +7,6 @@
   shell: "{{ container_run }}
           --mount=type=bind,source={{ mgmtd_conf_file }},destination=/{{ mgmtd_conf_filename }}
            {{ container }}
-           /opt/beegfs/sbin/beegfs-mgmtd cfgFile=/{{ mgmtd_conf_filename }} pidFile={{ mgmtd_pid_file }} &"
+           {{ mgmtd_bin }} cfgFile=/{{ mgmtd_conf_filename }} pidFile={{ mgmtd_pid_file }} &"
   register: output
 - debug: var=output.stdout_lines

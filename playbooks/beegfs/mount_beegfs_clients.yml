@@ -17,4 +17,4 @@
   vars:
     host_idx: "{{ groups['compute_nodes'].index(inventory_hostname) }}"
   roles:
-    - client
+    - mount_client

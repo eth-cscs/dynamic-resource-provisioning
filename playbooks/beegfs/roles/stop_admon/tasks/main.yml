@@ -1,0 +1,5 @@
+- name: Kill containerized BeeGFS monitoring service
+  shell: pkill -xf "/opt/beegfs/sbin/beegfs-admon cfgFile=/{{ admon_conf_filename }} pidFile={{ admon_pid_file }}"
+  ignore_errors: yes
+  register: output
+- debug: var=output.stdout_lines

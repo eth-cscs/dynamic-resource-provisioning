@@ -11,71 +11,16 @@
 - hosts: storage_nodes
   gather_facts: False
   vars:
-    # Global vars
     host_idx: "{{ groups['storage_nodes'].index(inventory_hostname) }}"
-  
-    # Metadata vars
-    meta_name: "beegfs-meta-{{ host_idx }}"
-    meta_pid_file: "{{ first_disk }}/{{ meta_name }}.pid"
-    meta_conf_filename: "{{ meta_name }}.conf"
-
-  tasks:
-  #####################
-  # BeeGFS Metadata   #
-  #####################
-  - name: Kill containerized BeeGFS metadata service
-    shell: pkill -xf "/opt/beegfs/sbin/beegfs-meta cfgFile=/{{ meta_conf_filename }} pidFile={{ meta_pid_file }}"
-    ignore_errors: yes
-    register: output
-  - debug: var=output.stdout_lines    
-
-  #####################
-  # BeeGFS Storage    #
-  #####################
-  - name: Kill containerized BeeGFS storage service
-    vars:
-      storage_name: "beegfs-storage-{{ host_idx }}-{{ item.name }}"
-      storage_pid_file: "{{ item.mount_point }}/{{ storage_name }}.pid"
-      storage_conf_filename: "{{ storage_name }}.conf"
-    shell: pkill -xf "/opt/beegfs/sbin/beegfs-storage cfgFile=/{{ storage_conf_filename }} pidFile={{ storage_pid_file }}"
-    ignore_errors: yes
-    loop: "{{ disks }}"
-    loop_control:
-      extended: yes
-    register: output
-  - debug: var=output.stdout_lines    
+  roles:
+    - stop_meta
+    - stop_storage
 
 #####################
 # Nodes 0 only      #
 #####################
 - hosts: storage_nodes[0]
   gather_facts: False
-  vars:
-    # Management vars
-    mgmtd_name: "beegfs-mgmtd-0"
-    mgmtd_pid_file: "{{ first_disk }}/{{ mgmtd_name }}.pid"
-    mgmtd_conf_filename: "{{ mgmtd_name }}.conf"
-
-    # Monitoring vars
-    admon_name: "beegfs-admon-0"
-    admon_pid_file: "{{ first_disk }}/{{ admon_name }}.pid"
-    admon_conf_filename: "{{ admon_name }}.conf"
-    
-  tasks:
-  ########################
-  #  - BeeGFS Management #
-  ########################
-  - name: Kill containerized BeeGFS management service
-    shell: pkill -xf "/opt/beegfs/sbin/beegfs-mgmtd cfgFile=/{{ mgmtd_conf_filename }} pidFile={{ mgmtd_pid_file }}"
-    ignore_errors: yes
-    register: output
-  - debug: var=output.stdout_lines    
-
-  ########################
-  #  - BeeGFS Admon      #
-  ########################
-  - name: Kill containerized BeeGFS monitoring service
-    shell: pkill -xf "/opt/beegfs/sbin/beegfs-admon cfgFile=/{{ admon_conf_filename }} pidFile={{ admon_pid_file }}"
-    ignore_errors: yes
-    register: output
-  - debug: var=output.stdout_lines    
+  roles:
+    - stop_admon
+    - stop_mgmtd
