@@ -1,4 +1,5 @@
 meta_name: "beegfs-meta-{{ host_idx }}"
+meta_bin: "/opt/beegfs/sbin/beegfs-meta"
 meta_mgmtd_host: "{{ groups['storage_nodes'][0] }}"
 meta_dir: "{{ first_disk }}/{{ meta_name }}"
 meta_port_tcp: "{{ host_idx|int + 8010 }}"

@@ -1,4 +1,0 @@
-mgmtd_bin: "/opt/beegfs/sbin/beegfs-mgmtd"
-admon_bin: "/opt/beegfs/sbin/beegfs-admon"
-meta_bin: "/opt/beegfs/sbin/beegfs-meta"
-storage_bin: "/opt/beegfs/sbin/beegfs-storage"
