@@ -8,9 +8,16 @@ import hostlist
 
 class DSRPInventory (object):
 
-    def __init__(self, root_dir, system, filename):
+    def __init__(self, dsrp_root_dir):
         super().__init__()
-        inventory_file = root_dir+'/targets/'+system+'/'+filename
+        self._dsrp_root_dir = dsrp_root_dir
+        self._system = ''
+        self._inventory_file = ''
+        self._inventory_content = ''
+
+        
+    def load_inventory (self, system):
+        inventory_file = self._dsrp_root_dir+'/targets/'+system+'/inventory.yml'
         
         if not os.path.exists (inventory_file):
             print (__file__+': error: Inventory file does not exist! ('+inventory_file+')')
@@ -23,7 +30,7 @@ class DSRPInventory (object):
         self.set_job_inventory_file ()
         
     
-    def get_inventory_file (self):
+    def _get_inventory_file (self):
         return self._inventory_file
 
 
@@ -55,9 +62,7 @@ class DSRPInventory (object):
             self._inventory_content['all']['children']['compute_nodes']['hosts'][node] = None
 
 
-    def write_job_inventory (self):
-        self.set_job_inventory_file ()
-        
+    def set_job_inventory (self):
         if self._inventory_file == self._inventory_job_file:
             print (__file__+': error: Cannot overwrite inventory file!')
             sys.exit (1)

@@ -13,6 +13,7 @@ from dsrp.src.dsrp_data_manager import DSRPDataManager
 from dsrp.src.dsrp_inventory import DSRPInventory
 
 dsrp_data_manager = DSRPDataManager (dsrp_root_dir)
+dsrp_inventory = DSRPInventory (dsrp_root_dir)
 
 def parse_args ():
     global dsrp_data_manager
@@ -27,6 +28,15 @@ def parse_args ():
     args = parser.parse_args ()
     
     dsrp_data_manager.load_config (args.data_manager)
+    dsrp_inventory.load_inventory (args.target)
+
+    if args.storage_nodelist:
+        dsrp_inventory.set_storage_nodelist (args.storage_nodelist)
+        
+    if args.compute_nodelist:
+        dsrp_inventory.set_compute_nodelist (args.compute_nodelist)
+        
+    dsrp_inventory.set_job_inventory()
 
     return args.command
     
@@ -34,59 +44,14 @@ def parse_args ():
 def main (argv):
     global dsrp_data_manager
     command = parse_args ()
-    #dsrp_inventory = DSRPInventory ()
     
-    # if command == "start":
-    #     #######################
-    #     # Storage nodes       #
-    #     #######################
-    #     storage_nodelist = get_env_var (dsrp_data_manager.get_storage_sched_env_var ())
-    #     dsrp_inventory.set_storage_nodelist (storage_nodelist)
+    if command == "start":
+        dsrp_data_manager.start_servers (dsrp_inventory.get_job_inventory_file())
+        dsrp_data_manager.start_clients (dsrp_inventory.get_job_inventory_file())
+    else:
+        dsrp_data_manager.stop_servers (dsrp_inventory.get_job_inventory_file())
+        dsrp_data_manager.stop_clients (dsrp_inventory.get_job_inventory_file())
 
-    #     #######################
-    #     # Compute nodes       #
-    #     #######################
-    #     compute_nodelist = get_env_var (dsrp_data_manager.get_compute_sched_env_var ())
-    #     dsrp_inventory.set_compute_nodelist (compute_nodelist)
         
-    #     job_inventory = dsrp_inventory.write_job_inventory (job_id)
-
-    #     # Servers
-    #     if dsrp_data_manager.get_dm_server_start_file ():
-    #         server_playbook = DSRPPlaybook (dsrp_data_manager.get_dm_server_start_file ())
-    #         server_playbook.run_playbook (job_inventory)
-    #     else:
-    #         print (__file__+': error: No playbook set for starting the servers!')
-    #         sys.exit (2)
-
-    #     # Clients
-    #     if dsrp_data_manager.get_dm_client_start_file ():
-    #         client_playbook = DSRPPlaybook (dsrp_data_manager.get_dm_client_start_file ())
-    #         client_playbook.run_playbook (job_inventory)
-    #     else:
-    #         print (__file__+': warning: No playbook set for starting the clients.')
-
-    # else:
-    #     job_inventory = dsrp_inventory.get_job_inventory_file ()
-    #     if not os.path.exists (job_inventory):
-    #         print (__file__+': error: Inventory file does not exist! ('+
-    #                dsrp_inventory.get_job_inventory_file ()+')')
-    #         sys.exit (2)
-
-    #     # Servers
-    #     if dsrp_data_manager.get_dm_server_stop_file ():
-    #         server_playbook = DSRPPlaybook (dsrp_data_manager.get_dm_server_stop_file ())
-    #         server_playbook.run_playbook (job_inventory)
-    #     else:
-    #         print (__file__+': warning: No playbook set for stopping the servers.')
-
-    #     # Clients
-    #     if dsrp_data_manager.get_dm_client_stop_file ():
-    #         client_playbook = DSRPPlaybook (dsrp_data_manager.get_dm_client_stop_file ())
-    #         client_playbook.run_playbook (job_inventory)
-    #     else:
-    #         print (__file__+': warning: No playbook set for stopping the clients.')
-        
-    
 if __name__ == "__main__":
     main (sys.argv[1:])

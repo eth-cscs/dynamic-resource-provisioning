@@ -80,43 +80,16 @@ class DSRPDataManager (object):
     
     # Servers
     #######################
-    def get_dm_server_start_file (self):
-        if 'start' in self._config_content['data_manager']['server']:
-            if not self._config_content['data_manager']['server']['start']:
-                return None
-            else:
-                return (self._playbook_root_dir()+
-                        self._config_content['data_manager']['server']['start'])
-        return None
-    
-    
-    def get_dm_server_stop_file (self):
-        if 'stop' in self._config_content['data_manager']['server']:
-            if not self._config_content['data_manager']['server']['stop']:
-                return None
-            else:
-                return (self._playbook_root_dir()+
-                        self._config_content['data_manager']['server']['stop'])
-        return None
+    def start_servers (self, inventory):
+        self._playbooks['server']['start'].run_playbook (inventory)
 
+    def stop_servers (self, inventory):
+        self._playbooks['server']['stop'].run_playbook (inventory)
 
     # Clients
     #######################
-    def get_dm_client_start_file (self):
-        if 'start' in self._config_content['data_manager']['client']:
-            if not self._config_content['data_manager']['client']['start']:
-                return None
-            else:
-                return (self._playbook_root_dir()+
-                        self._config_content['data_manager']['client']['start'])
-        return None
+    def start_clients (self, inventory):
+        self._playbooks['client']['start'].run_playbook (inventory)
 
-    
-    def get_dm_client_stop_file (self):
-        if 'stop' in self._config_content['data_manager']['client']:
-            if not self._config_content['data_manager']['client']['stop']:
-                return None
-            else:
-                return (self._playbook_root_dir()+
-                        self._config_content['data_manager']['client']['stop'])
-        return None
+    def stop_clients (self, inventory):
+        self._playbooks['client']['stop'].run_playbook (inventory)
