@@ -8,7 +8,7 @@ import hostlist
 
 class DSRPInventory (object):
 
-    def __init__(self, root_dir, system, filename, job_id):
+    def __init__(self, root_dir, system, filename):
         super().__init__()
         inventory_file = root_dir+'/targets/'+system+'/'+filename
         
@@ -20,15 +20,15 @@ class DSRPInventory (object):
         stream = open (self._inventory_file, 'r')
         self._inventory_content = yaml.safe_load (stream)
         stream.close ()
-        self.set_job_inventory_file (job_id)
+        self.set_job_inventory_file ()
         
     
     def get_inventory_file (self):
         return self._inventory_file
 
 
-    def set_job_inventory_file (self, job_id):
-        self._inventory_job_file = os.path.dirname(self._inventory_file)+'/inventory_'+str(job_id)+'.yml'
+    def set_job_inventory_file (self):
+        self._inventory_job_file = os.path.dirname(self._inventory_file)+'/inventory_job.yml'
         
         
     def get_job_inventory_file (self):
@@ -55,8 +55,8 @@ class DSRPInventory (object):
             self._inventory_content['all']['children']['compute_nodes']['hosts'][node] = None
 
 
-    def write_job_inventory (self, job_id):
-        self.set_job_inventory_file (job_id)
+    def write_job_inventory (self):
+        self.set_job_inventory_file ()
         
         if self._inventory_file == self._inventory_job_file:
             print (__file__+': error: Cannot overwrite inventory file!')

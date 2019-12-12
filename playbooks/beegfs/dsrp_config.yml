@@ -1,0 +1,7 @@
+data_manager:
+  server:
+    start: start_beegfs_servers.yml
+    stop: stop_beegfs_servers.yml
+  client:
+    start: mount_beegfs_clients.yml
+    stop: umount_beegfs_clients.yml

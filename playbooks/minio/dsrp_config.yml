@@ -1,0 +1,7 @@
+data_manager:
+  server:
+    start: start_minio_servers.yml
+    stop: stop_minio_servers.yml
+  client:
+    start: 
+    stop: 
