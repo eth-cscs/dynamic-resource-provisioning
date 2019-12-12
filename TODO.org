@@ -13,8 +13,7 @@
 - BeeGFS scripts (/opt/beegfs/etc...) as variables in tasks: make those
   variables global
 - Move client_mount_point from roles/client/vars to make it a user-defined variable
-- Fix version of BeeGFS instead of the latest one : add Dockerfile argument
-  (--build_args)
+- Fix version of Debian for the BeeGFS container 
 - Use containerized BeeGFS tool (beegfs-ctl ?) to stop all the services
   instead of killing them
 

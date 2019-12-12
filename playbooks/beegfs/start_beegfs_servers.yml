@@ -23,8 +23,6 @@
 #####################
 - hosts: storage_nodes[0]
   gather_facts: False
-  vars_files:
-    - vars/beegfs_vars.yml
   roles:
     - start_mgmtd
     - start_admon
@@ -39,3 +37,6 @@
   roles:
     - start_meta
     - start_storage
+
+# - pause:
+#     seconds: 30
