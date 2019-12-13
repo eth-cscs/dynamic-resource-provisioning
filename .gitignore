@@ -13,3 +13,5 @@ playbooks/cassandra/configurations/*
 !playbooks/cassandra/configurations/README.md
 
 inventory_*.yml
+
+benchmarks/minio/s3-benchmark/benchmark.log
