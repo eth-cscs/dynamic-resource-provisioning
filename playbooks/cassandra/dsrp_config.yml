@@ -1,0 +1,7 @@
+data_manager:
+  server:
+    start: start_cassandra_servers.yml
+    stop: stop_cassandra_servers.yml
+  client:
+    start: 
+    stop: 

@@ -8,9 +8,9 @@ exec(open(activate_this, 'r').read(), dict(__file__=activate_this))
 
 import sys
 import argparse
-from dsrp.src.common import get_env_var
-from dsrp.src.dsrp_data_manager import DSRPDataManager
-from dsrp.src.dsrp_inventory import DSRPInventory
+from src.common import get_env_var
+from src.dsrp_data_manager import DSRPDataManager
+from src.dsrp_inventory import DSRPInventory
 
 dsrp_data_manager = DSRPDataManager (dsrp_root_dir)
 dsrp_inventory = DSRPInventory (dsrp_root_dir)

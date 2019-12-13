@@ -3,7 +3,7 @@
 import os
 import yaml
 import sys
-from dsrp.src.dsrp_playbook import DSRPPlaybook
+from src.dsrp_playbook import DSRPPlaybook
 
 class DSRPDataManager (object):
 
