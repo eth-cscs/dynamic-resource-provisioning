@@ -5,9 +5,9 @@
     
   shell: "{{ container_run }}
           {{ container }}
-          mc config host add minio
+          /bin/sh -c 'mc config host add minio
           http://{{ groups['storage_nodes'][0] }}:9000
           {{ minio_access_key }} {{ minio_secret_key }};
-          mc admin service stop minio"
+          mc admin service stop minio'"
   register: output
 - debug: var=output

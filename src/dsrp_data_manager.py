@@ -89,7 +89,13 @@ class DSRPDataManager (object):
     # Clients
     #######################
     def start_clients (self, inventory):
-        self._playbooks['client']['start'].run_playbook (inventory)
+        try:
+            self._playbooks['client']['start'].run_playbook (inventory)
+        except KeyError:
+            print (__file__+": info: No client-side service to start.")
 
     def stop_clients (self, inventory):
-        self._playbooks['client']['stop'].run_playbook (inventory)
+        try:
+            self._playbooks['client']['stop'].run_playbook (inventory)
+        except KeyError:
+            print (__file__+": info: No client-side service to stop.")
