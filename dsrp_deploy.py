@@ -24,12 +24,24 @@ def parse_args ():
                          help="Storage nodelist for data manager deployment. Usually a job scheduler environment variable")
     parser.add_argument ('-c', '--compute-nodelist',
                          help="Compute nodelist for clients deployment, Usually a job scheduler environment variable")
+    parser.add_argument ('-i', '--stage-in', help="Location of staged-out data from a previously deployed data manager")
+    parser.add_argument ('-o', '--stage-out', help="Location where the data is to be backed up for future use")
     parser.add_argument ('-t', '--target', help="[DEBUG] Target architecture")
     args = parser.parse_args ()
-    
+
+    if args.stage_in and args.command == "stop":
+        parser.print_usage()
+        print ('Error: argument --stage-in (-i) is not allowed with argument stop')
+        sys.exit(1)
+
+    if args.stage_out and args.command == "start":
+        parser.print_usage()
+        print ('Error: argument --stage-out (-o) is not allowed with argument start')
+        sys.exit(1)
+        
     dsrp_data_manager.load_config (args.data_manager)
     dsrp_inventory.load_inventory (args.target)
-
+    
     if args.storage_nodelist:
         dsrp_inventory.set_storage_nodelist (args.storage_nodelist)
         
@@ -45,12 +57,12 @@ def main (argv):
     global dsrp_data_manager
     command = parse_args ()
     
-    if command == "start":
-        dsrp_data_manager.start_servers (dsrp_inventory.get_job_inventory_file())
-        dsrp_data_manager.start_clients (dsrp_inventory.get_job_inventory_file())
-    else:
-        dsrp_data_manager.stop_servers (dsrp_inventory.get_job_inventory_file())
-        dsrp_data_manager.stop_clients (dsrp_inventory.get_job_inventory_file())
+    # if command == "start":
+    #     dsrp_data_manager.start_servers (dsrp_inventory.get_job_inventory_file())
+    #     dsrp_data_manager.start_clients (dsrp_inventory.get_job_inventory_file())
+    # else:
+    #     dsrp_data_manager.stop_servers (dsrp_inventory.get_job_inventory_file())
+    #     dsrp_data_manager.stop_clients (dsrp_inventory.get_job_inventory_file())
 
         
 if __name__ == "__main__":
