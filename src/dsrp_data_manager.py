@@ -76,8 +76,7 @@ class DSRPDataManager (object):
 
     def _playbook_root_dir (self):
         return os.path.dirname(self._config_file)+'/'
-
-    
+      
     # Servers
     #######################
     def start_servers (self, inventory):
@@ -99,3 +98,13 @@ class DSRPDataManager (object):
             self._playbooks['client']['stop'].run_playbook (inventory)
         except KeyError:
             print (__file__+": info: No client-side service to stop.")
+
+
+    #######################
+    # Stage in/out        #
+    #######################
+    def stage_in_data (self):
+        return
+
+    def stage_out_data (self):
+        return
