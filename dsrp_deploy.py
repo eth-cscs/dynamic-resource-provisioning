@@ -29,15 +29,21 @@ def parse_args ():
     parser.add_argument ('-t', '--target', help="[DEBUG] Target architecture")
     args = parser.parse_args ()
 
-    if args.stage_in and args.command == "stop":
-        parser.print_usage()
-        print ('Error: argument --stage-in (-i) is not allowed with argument stop')
-        sys.exit(1)
+    if args.stage_in:
+        if args.command == "stop":
+            parser.print_usage()
+            print ('Error: argument --stage-in (-i) is not allowed with argument stop')
+            sys.exit(1)
+        else:
+            dsrp_data_manager.enable_stage_in (args.stage_in)
 
-    if args.stage_out and args.command == "start":
-        parser.print_usage()
-        print ('Error: argument --stage-out (-o) is not allowed with argument start')
-        sys.exit(1)
+    if args.stage_out:
+        if args.command == "start":
+            parser.print_usage()
+            print ('Error: argument --stage-out (-o) is not allowed with argument start')
+            sys.exit(1)
+        else:
+            dsrp_data_manager.enable_stage_out (args.stage_out)
         
     dsrp_data_manager.load_config (args.data_manager)
     dsrp_inventory.load_inventory (args.target)
@@ -56,13 +62,13 @@ def parse_args ():
 def main (argv):
     global dsrp_data_manager
     command = parse_args ()
-    
-    # if command == "start":
-    #     dsrp_data_manager.start_servers (dsrp_inventory.get_job_inventory_file())
-    #     dsrp_data_manager.start_clients (dsrp_inventory.get_job_inventory_file())
-    # else:
-    #     dsrp_data_manager.stop_servers (dsrp_inventory.get_job_inventory_file())
-    #     dsrp_data_manager.stop_clients (dsrp_inventory.get_job_inventory_file())
+
+    if command == "start":
+        dsrp_data_manager.start_servers (dsrp_inventory.get_job_inventory_file())
+        dsrp_data_manager.start_clients (dsrp_inventory.get_job_inventory_file())
+    else:
+        dsrp_data_manager.stop_servers (dsrp_inventory.get_job_inventory_file())
+        dsrp_data_manager.stop_clients (dsrp_inventory.get_job_inventory_file())
 
         
 if __name__ == "__main__":
