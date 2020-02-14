@@ -3,10 +3,25 @@
   gather_facts: False
 
   tasks:
-    - set_fact: container_run="{{ container_runtime_cmd }} --entrypoint {{ container_runtime_mnt }}"
-    - set_fact: container="minio/minio"
+  - name: Copy files from backup storage to disks
+    vars:
+      host_idx: "{{ groups['storage_nodes'].index(inventory_hostname) }}"
+    copy:
+      src: "{{ stage_in_path }}/{{ host_idx }}/{{ ansible_loop.index0 }}.tar.gz"
+      dest: "{{ item.mount_point }}/{{ ansible_loop.index0 }}.tar.gz"
+    loop: "{{ disks }}"
+    loop_control:
+      extended: yes
+    register: output
+  - debug: var=output.results
 
-- hosts: storage_nodes
-  gather_facts: False
-  roles:
-    - start_server
+  - name: Extract content from the archive
+    unarchive:
+      src: "{{ item.mount_point }}/{{ ansible_loop.index0 }}.tar.gz"
+      dest: "{{ item.mount_point }}"
+      remote_src: true
+    loop: "{{ disks }}"
+    loop_control:
+      extended: yes
+    register: output
+  - debug: var=output.results

@@ -20,6 +20,7 @@ class DSRPDataManager (object):
         self._stage_in_path = ''
         self._stage_out = False
         self._stage_out_path = ''
+        self._clean_up = False
 
         
     def load_config (self, data_manager):
@@ -83,6 +84,8 @@ class DSRPDataManager (object):
     # Servers
     #######################
     def start_servers (self, inventory):
+        if self._stage_in:
+            self._playbooks['server']['stage_in'].run_playbook (inventory, "stage_in_path="+self._stage_in_path)
         self._playbooks['server']['start'].run_playbook (inventory)
 
         
@@ -90,6 +93,8 @@ class DSRPDataManager (object):
         self._playbooks['server']['stop'].run_playbook (inventory)
         if self._stage_out:
             self._playbooks['server']['stage_out'].run_playbook (inventory, "stage_out_path="+self._stage_out_path)
+        if self._clean_up:
+            self._playbooks['server']['clean_up'].run_playbook (inventory)
 
     # Clients
     #######################
@@ -111,16 +116,18 @@ class DSRPDataManager (object):
     # Stage in/out        #
     #######################
     def enable_stage_in (self, data_path):
+        stage_in_playbook = self._dsrp_root_dir+'/playbooks/common/stage_in.yml'
+        try:
+            self._playbooks['server']['stage_in'] = DSRPPlaybook (stage_in_playbook)
+        except (KeyError, TypeError):
+            print (__file__+": warning: No playbook set for staging out data.")
+            
         if not os.path.exists (data_path):
             print (__file__+': error: No data to stage in. Path does not exist! ('+data_path+')')
             sys.exit (2)
             
         self._stage_in_path = data_path
         self._stage_in = True
-
-        
-    def _stage_in_data (self):
-        return
 
     
     def enable_stage_out (self, data_path):
@@ -133,5 +140,16 @@ class DSRPDataManager (object):
         self._stage_out_path = data_path
         self._stage_out = True
 
-
+        
+    #######################
+    # Disk management     #
+    #######################
+    def clean_up_disks (self):
+        clean_up_playbook = self._dsrp_root_dir+'/playbooks/common/clean_up_disks.yml'
+        try:
+            self._playbooks['server']['clean_up'] = DSRPPlaybook (clean_up_playbook)
+        except (KeyError, TypeError):
+            print (__file__+": warning: No playbook set for staging out data.")
+            
+        self._clean_up = True
         

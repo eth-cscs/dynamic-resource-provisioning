@@ -44,6 +44,9 @@ def parse_args ():
             sys.exit(1)
         else:
             dsrp_data_manager.enable_stage_out (args.stage_out)
+
+    # TODO: Add a parameter for disabling clean-up of disks
+    dsrp_data_manager.clean_up_disks ()
         
     dsrp_data_manager.load_config (args.data_manager)
     dsrp_inventory.load_inventory (args.target)
