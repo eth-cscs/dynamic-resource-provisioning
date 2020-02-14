@@ -24,9 +24,10 @@ def parse_args ():
                          help="Storage nodelist for data manager deployment. Usually a job scheduler environment variable")
     parser.add_argument ('-c', '--compute-nodelist',
                          help="Compute nodelist for clients deployment, Usually a job scheduler environment variable")
+    parser.add_argument ('-t', '--target', help="[DEBUG] Target architecture")
     parser.add_argument ('-i', '--stage-in', help="Location of staged-out data from a previously deployed data manager")
     parser.add_argument ('-o', '--stage-out', help="Location where the data is to be backed up for future use")
-    parser.add_argument ('-t', '--target', help="[DEBUG] Target architecture")
+    parser.add_argument ('-k', '--keep', help="Force keeping data on disk after stopping the data manager", action='store_true')
     args = parser.parse_args ()
 
     if args.stage_in:
@@ -45,8 +46,11 @@ def parse_args ():
         else:
             dsrp_data_manager.enable_stage_out (args.stage_out)
 
-    # TODO: Add a parameter for disabling clean-up of disks
-    dsrp_data_manager.clean_up_disks ()
+    if args.keep:
+        if args.command == "start":
+            print ('Warning: argument --keep (-k) is pointless when deploying a data manager')
+        else:
+            dsrp_data_manager.disable_clean_up_disks ()
         
     dsrp_data_manager.load_config (args.data_manager)
     dsrp_inventory.load_inventory (args.target)
