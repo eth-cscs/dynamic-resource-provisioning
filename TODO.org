@@ -4,9 +4,13 @@
   
 - Run tools stopping servers from the login node. No need to ssh the first
   storage node to run it.
+- [WARNING]: Consider using 'become', 'become_method', and 'become_user' rather than running sudo
+
 
 * Data managers
 
+** All
+   - For all the Data Managers, check container images availability
 ** BeeGFS
 - Dynamically create inventory file with groups per service. Meta-nodes,
   storage-nodes, etc...

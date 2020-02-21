@@ -3,6 +3,8 @@
   gather_facts: False
 
   tasks:
+#  - name: Check matching of resources
+    
   - name: Copy files from backup storage to disks
     vars:
       host_idx: "{{ groups['storage_nodes'].index(inventory_hostname) }}"

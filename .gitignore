@@ -15,3 +15,4 @@ playbooks/cassandra/configurations/*
 inventory_*.yml
 
 benchmarks/minio/s3-benchmark/benchmark.log
+benchmarks/beegfs/HACC-IO/miniHACC-MPIIO
