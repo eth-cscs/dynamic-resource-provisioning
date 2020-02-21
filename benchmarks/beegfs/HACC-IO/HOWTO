@@ -1,0 +1,4 @@
+salloc -N100 -C mc -t 02:00:00 : -N8 -C storage
+./dsrp_deploy.py -s $SLURM_JOB_NODELIST_PACK_GROUP_1 -c $SLURM_JOB_NODELIST_PACK_GROUP_0 -t daint start beegfs
+srun --pack-group=0 -n 3600 -N 100 --ntasks-per-node=36 --ntasks-per-core=1 ./miniHACC-MPIIO -f 36 -i -s -p 2500000 -o /users/ftessier/beegfs/
+./dsrp_deploy.py -s $SLURM_JOB_NODELIST_PACK_GROUP_1 -c $SLURM_JOB_NODELIST_PACK_GROUP_0 -t daint stop beegfs
