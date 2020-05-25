@@ -5,9 +5,6 @@ container_runtime_module: sarus
 container_runtime_cmd: "module load {{ container_runtime_module }}; sarus run"
 container_runtime_mnt: "--mount=type=bind,bind-propagation=recursive,source=/mnt,destination=/mnt"
 
-# Absolute path of this current repo
-root_dir: /users/ftessier/dynamic-resource-provisioning
-
 # Tools
 kill_cmd: "pkill -xf -9"
 mount_cmd: "/usr/bin/mount"
