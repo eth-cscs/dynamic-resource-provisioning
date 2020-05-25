@@ -3,8 +3,18 @@
   gather_facts: False
 
   tasks:
-#  - name: Check matching of resources
-    
+  - name: List available archives
+    find:
+      paths: "{{ stage_in_path }}/"
+      use_regex: yes
+      patterns: ['.*[0-9]*.tar.gz$']
+      file_type: file
+      recurse: yes
+    register: archive_list
+  - debug: var=archive_list.files
+
+#  -name: 
+      
   - name: Copy files from backup storage to disks
     vars:
       host_idx: "{{ groups['storage_nodes'].index(inventory_hostname) }}"
