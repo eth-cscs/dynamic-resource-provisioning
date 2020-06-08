@@ -1,0 +1,31 @@
+---
+- hosts: storage_nodes
+  gather_facts: False
+
+  tasks:
+  - name: Clean up disks
+    shell: "/bin/rm -rf {{ item.mount_point }}/*"
+    loop: "{{ disks }}"
+    loop_control:
+      extended: yes
+    register: output
+  - debug: var=output.results
+    
+  # tasks:
+  # - name: List files/directories to delete
+  #   find:
+  #     paths: "{{ item.mount_point }}/"
+  #     patterns: "*"
+  #   loop: "{{ disks }}"
+  #   loop_control:
+  #     extended: yes
+  #   register: files_to_delete
+  # - debug: var=files_to_delete
+    
+  # - name: Clean up disks
+  #   file:
+  #     path: "{{ item.path }}"
+  #     state: absent
+  #   with_items: "{{ files_to_delete.results.files }}"
+  #   register: output
+  # - debug: var=output.results

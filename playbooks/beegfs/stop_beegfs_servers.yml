@@ -1,0 +1,26 @@
+---
+- hosts: storage_nodes
+  gather_facts: False
+
+  tasks:
+    - set_fact: first_disk="{{ disks[0].mount_point }}"
+
+#####################
+# All nodes         #
+#####################
+- hosts: storage_nodes
+  gather_facts: False
+  vars:
+    host_idx: "{{ groups['storage_nodes'].index(inventory_hostname) }}"
+  roles:
+    - stop_meta
+    - stop_storage
+
+#####################
+# Nodes 0 only      #
+#####################
+- hosts: storage_nodes[0]
+  gather_facts: False
+  roles:
+    - stop_admon
+    - stop_mgmtd

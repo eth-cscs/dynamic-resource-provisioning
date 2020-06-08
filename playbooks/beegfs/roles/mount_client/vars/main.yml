@@ -1,0 +1,6 @@
+client_name: "beegfs-client-{{ host_idx }}"
+client_mgmtd_host: "{{ groups['storage_nodes'][0] }}"
+client_port_udp: "{{ host_idx|int + 8500 }}"
+client_conf_filename: "{{ client_name }}.conf"
+client_conf_file: "{{ config_dir }}/{{ client_conf_filename }}"
+client_mount_point: "/users/ftessier/beegfs"

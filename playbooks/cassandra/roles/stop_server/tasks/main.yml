@@ -1,0 +1,20 @@
+- name: Stop cassandra daemons
+  vars:
+    c_username: "cassandra"
+    c_password: "cassandra"
+    
+  shell: "{{ container_run }}
+          {{ container }}
+          nodetool
+          -u {{ c_username }}
+          -pw {{ c_password }}
+          -h {{ item }}
+          stopdaemon"
+  ignore_errors: yes
+  loop: "{{ groups['storage_nodes'] | reverse | list }}"
+  loop_control:
+    extended: yes
+  register: output
+- debug: var=output
+
+    

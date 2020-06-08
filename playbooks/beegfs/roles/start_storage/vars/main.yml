@@ -1,0 +1,3 @@
+storage_mgmtd_host: "{{ groups['storage_nodes'][0] }}"
+storage_bin: "/opt/beegfs/sbin/beegfs-storage"
+storage_daemonized: "false"

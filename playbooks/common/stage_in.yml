@@ -1,0 +1,39 @@
+---
+- hosts: storage_nodes
+  gather_facts: False
+
+  tasks:
+  - name: List available archives
+    find:
+      paths: "{{ stage_in_path }}/"
+      use_regex: yes
+      patterns: ['.*[0-9]*.tar.gz$']
+      file_type: file
+      recurse: yes
+    register: archive_list
+  - debug: var=archive_list.files
+
+#  -name: 
+      
+  - name: Copy files from backup storage to disks
+    vars:
+      host_idx: "{{ groups['storage_nodes'].index(inventory_hostname) }}"
+    copy:
+      src: "{{ stage_in_path }}/{{ host_idx }}/{{ ansible_loop.index0 }}.tar.gz"
+      dest: "{{ item.mount_point }}/{{ ansible_loop.index0 }}.tar.gz"
+    loop: "{{ disks }}"
+    loop_control:
+      extended: yes
+    register: output
+  - debug: var=output.results
+
+  - name: Extract content from the archive
+    unarchive:
+      src: "{{ item.mount_point }}/{{ ansible_loop.index0 }}.tar.gz"
+      dest: "{{ item.mount_point }}"
+      remote_src: true
+    loop: "{{ disks }}"
+    loop_control:
+      extended: yes
+    register: output
+  - debug: var=output.results

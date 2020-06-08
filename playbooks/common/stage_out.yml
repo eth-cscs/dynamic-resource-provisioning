@@ -1,0 +1,40 @@
+---
+- hosts: storage_nodes
+  gather_facts: False
+
+  tasks:
+  - name: Create an archive for each disk
+    archive:
+      path:
+      - "{{ item.mount_point }}/*"
+      dest: "{{ item.mount_point }}/{{ ansible_loop.index0 }}.tar.gz"
+      format: gz
+      force_archive: true
+    loop: "{{ disks }}"
+    loop_control:
+      extended: yes
+    register: output
+  - debug: var=output.results
+
+  - name: Create destination directory if it does not exist
+    vars:
+      host_idx: "{{ groups['storage_nodes'].index(inventory_hostname) }}"
+    file:
+      path: "{{ stage_out_path }}/{{ host_idx }}"
+      state: directory
+      mode: '0755'
+      
+  - name: Copy files from disks to long-term persistent storage
+    vars:
+      host_idx: "{{ groups['storage_nodes'].index(inventory_hostname) }}"
+    copy:
+      src: "{{ item.mount_point }}/{{ ansible_loop.index0 }}.tar.gz"
+      dest: "{{ stage_out_path }}/{{ host_idx }}/{{ ansible_loop.index0 }}.tar.gz"
+      remote_src: true
+    loop: "{{ disks }}"
+    loop_control:
+      extended: yes
+    register: output
+  - debug: var=output.results
+
+

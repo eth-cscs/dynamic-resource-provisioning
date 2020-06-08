@@ -1,0 +1,3 @@
+admon_name: "beegfs-admon-0"
+admon_pid_file: "{{ first_disk }}/{{ admon_name }}.pid"
+admon_conf_filename: "{{ admon_name }}.conf"

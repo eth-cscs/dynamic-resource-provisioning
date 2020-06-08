@@ -1,0 +1,5 @@
+- name: Kill containerized BeeGFS metadata service
+  shell: pkill -xf "/opt/beegfs/sbin/beegfs-meta cfgFile=/{{ meta_conf_filename }} pidFile={{ meta_pid_file }}"
+  ignore_errors: yes
+  register: output
+- debug: var=output.stdout_lines

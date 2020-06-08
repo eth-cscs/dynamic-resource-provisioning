@@ -1,0 +1,48 @@
+- name: Template BeeGFS storage configuration file
+  vars:
+    storage_name: "beegfs-storage-{{ host_idx }}-{{ item.name }}"
+    storage_dir: "{{ item.mount_point }}/{{ storage_name }}"
+    storage_port_tcp: "{{ host_idx|int * ansible_loop.length + ansible_loop.index0|int + 8100 }}"
+    storage_port_udp: "{{ host_idx|int * ansible_loop.length + ansible_loop.index0|int + 8100 }}"
+    storage_log_file: "{{ log_dir }}/{{ storage_name }}.log"
+    storage_pid_file: "{{ item.mount_point }}/{{ storage_name }}.pid"
+    storage_conf_filename: "{{ storage_name }}.conf"
+    storage_conf_file: "{{ config_dir }}/{{ storage_conf_filename }}"
+    
+  template:
+    src: "{{ template_dir }}/beegfs-storage.conf"
+    dest: "{{ storage_conf_file }}"
+  loop: "{{ disks }}"
+  loop_control:
+    extended: yes
+
+- name: Set instance IDs to enable multi-mode
+  vars:
+    storage_name: "beegfs-storage-{{ host_idx }}-{{ item.name }}"
+    storage_id: "{{ ( host_idx|int + 1 ) * ( ansible_loop.length + 1 ) + ansible_loop.index0|int }}"
+    storage_dir: "{{ item.mount_point }}/{{ storage_name }}"
+  shell: "mkdir {{ storage_dir }};
+          echo {{ storage_id }} > {{ storage_dir }}/nodeNumID;
+          echo {{ storage_id }} > {{ storage_dir }}/targetNumID;
+          echo {{ storage_name }} > {{ storage_dir }}/nodeID;"
+  loop: "{{ disks }}"
+  loop_control:
+    extended: yes
+  register: output
+- debug: var=output.results
+
+- name: Deploy containerized BeeGFS storage service
+  vars:
+    storage_name: "beegfs-storage-{{ host_idx }}-{{ item.name }}"
+    storage_pid_file: "{{ item.mount_point }}/{{ storage_name }}.pid"
+    storage_conf_filename: "{{ storage_name }}.conf"
+    storage_conf_file: "{{ config_dir }}/{{ storage_conf_filename }}"
+  shell: "{{ container_run }}
+          --mount=type=bind,source={{ storage_conf_file }},destination=/{{ storage_conf_filename }}
+          {{ container }}
+          /opt/beegfs/sbin/beegfs-storage cfgFile=/{{ storage_conf_filename }} pidFile={{ storage_pid_file }} &"
+  loop: "{{ disks }}"
+  loop_control:
+    extended: yes
+  register: output
+- debug: var=output.results

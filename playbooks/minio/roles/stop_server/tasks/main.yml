@@ -1,0 +1,13 @@
+- name: Stop MinIO servers
+  vars:
+    minio_access_key: "IiaFsQIpRM"
+    minio_secret_key: "gQbENgqvagxFt59j4U46m4dwL83kBQmf"
+    
+  shell: "{{ container_run }}
+          {{ container }}
+          /bin/sh -c 'mc config host add minio
+          http://{{ groups['storage_nodes'][0] }}:9000
+          {{ minio_access_key }} {{ minio_secret_key }};
+          mc admin service stop minio'"
+  register: output
+- debug: var=output

@@ -1,0 +1,12 @@
+- name: Template BeeGFS monitoring configuration file
+  template:
+    src: "{{ template_dir }}/beegfs-admon.conf"
+    dest: "{{ admon_conf_file }}"
+    
+- name: Deploy containerized BeeGFS monitoring service
+  shell: "{{ container_run }}
+           --mount=type=bind,source={{ admon_conf_file }},destination=/{{ admon_conf_filename }}
+           {{ container }}
+           /opt/beegfs/sbin/beegfs-admon cfgFile=/{{ admon_conf_filename }} pidFile={{ admon_pid_file }} &"
+  register: output
+- debug: var=output.stdout_lines

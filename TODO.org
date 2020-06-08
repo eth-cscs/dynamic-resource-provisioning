@@ -1,0 +1,34 @@
+* Deployment script
+  
+* Ansible global configuration
+  
+- Run tools stopping servers from the login node. No need to ssh the first
+  storage node to run it.
+- [WARNING]: Consider using 'become', 'become_method', and 'become_user' rather than running sudo
+
+
+* Data managers
+
+** All
+   - For all the Data Managers, check container images availability
+** BeeGFS
+- Dynamically create inventory file with groups per service. Meta-nodes,
+  storage-nodes, etc...
+- BeeGFS scripts (/opt/beegfs/etc...) as variables in tasks: make those
+  variables global
+- Move client_mount_point from roles/client/vars to make it a user-defined variable
+- Fix version of Debian for the BeeGFS container 
+- Use containerized BeeGFS tool (beegfs-ctl ?) to stop all the services
+  instead of killing them
+
+** MinIO
+- Auto-generate keys (access, secret)
+- 
+
+** Cassandra
+- Autogenerate username/password for improved security
+- Add a task to sleep during the joining process (30000 ms according to the
+  log)
+- Clean up YAML files. Too many hard-coded values
+
+  

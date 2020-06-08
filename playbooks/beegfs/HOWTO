@@ -1,0 +1,58 @@
+Add Encryption
+---------------------
+On the target node hosting disks, cryptsetup and xfsprogs utilities needs to be installed. Then:
+
+$ sudo fdisk -l
+Disk /dev/sdb: 29.6 GiB, 31205621760 bytes, 60948480 sectors
+Disk model: Cruzer Glide 3.0
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x13c3a72d
+
+Device     Boot Start      End  Sectors  Size Id Type
+/dev/sdb1        2048 60948479 60946432 29.1G  c W95 FAT32 (LBA)
+
+$ umount /dev/sdb1
+
+$ sudo wipefs -a /dev/sdb1
+/dev/sdb1: 8 bytes were erased at offset 0x00000052 (vfat): 46 41 54 33 32 20 20 20
+/dev/sdb1: 1 byte was erased at offset 0x00000000 (vfat): eb
+/dev/sdb1: 2 bytes were erased at offset 0x000001fe (vfat): 55 aa
+
+$ sudo cryptsetup luksFormat /dev/sdb1
+
+WARNING!
+========
+This will overwrite data on /dev/sdb1 irrevocably.
+
+Are you sure? (Type uppercase yes): YES
+Enter passphrase for /dev/sdb1: cscs
+Verify passphrase: cscs
+
+$ sudo cryptsetup open --type luks /dev/sdb1 encryptedbeegfs
+Enter passphrase for /dev/sdb1: cscs
+
+$ ls -l /dev/mapper/encryptedbeegfs 
+lrwxrwxrwx 1 root root 7 Jan 17 10:18 /dev/mapper/encryptedbeegfs -> ../dm-3
+
+$ sudo mkfs.xfs /dev/mapper/encryptedbeegfs -L encbeegfs
+meta-data=/dev/mapper/encryptedbeegfs isize=512    agcount=4, agsize=1903552 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=0
+         =                       reflink=1
+data     =                       bsize=4096   blocks=7614208, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=3717, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+
+$ sudo mount /dev/mapper/encryptedbeegfs /mnt/encbeegfs
+
+$ cd /mnt/encbeegfs
+
+$ sudo bash -c "echo hello > test.txt"
+
+$ sudo umount /mnt/encbeegfs

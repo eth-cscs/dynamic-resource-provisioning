@@ -1,0 +1,1 @@
+emacs wget tar make gcc lsb-release gnupg apt-transport-https apt-utils usbutils less openssh-client openssh-server netcat python3-pip

@@ -1,0 +1,12 @@
+- name: Template BeeGFS metadata configuration file
+  template:
+    src: "{{ template_dir }}/beegfs-meta.conf"
+    dest: "{{ meta_conf_file }}"
+    
+- name: Deploy containerized BeeGFS metadata service
+  shell: "{{ container_run }}
+           --mount=type=bind,source={{ meta_conf_file }},destination=/{{ meta_conf_filename }}
+           {{ container }}
+           /opt/beegfs/sbin/beegfs-meta cfgFile=/{{ meta_conf_filename }} pidFile={{ meta_pid_file }} &"
+  register: output
+- debug: var=output.stdout_lines

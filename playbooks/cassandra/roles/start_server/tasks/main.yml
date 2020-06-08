@@ -1,0 +1,36 @@
+- name: Template Cassandra configuration file
+  vars:
+    cluster_name: "{{ groups['storage_nodes'][0] }}"
+    data_file_directories: |
+
+      {% for d in disks %}
+         - /var/lib/cassandra/data-{{ d.name }}
+      {% endfor %}
+    cassandra_conf_filename: "cassandra_{{ inventory_hostname }}.conf"
+    cassandra_conf_file: "{{ config_dir }}/{{ cassandra_conf_filename }}"
+  template:
+    src: "{{ template_dir }}/cassandra.yml"
+    dest: "{{ cassandra_conf_file }}"
+
+- name: Start Cassandra nodes
+  vars:
+    cassandra_conf_filename: "cassandra_{{ inventory_hostname }}.conf"
+    cassandra_conf_file: "{{ config_dir }}/{{ cassandra_conf_filename }}"
+    cassandra_auth_file: "{{ config_dir }}/jmxremote.password"  
+  shell: "{{ container_run }}
+          {% for d in disks %}
+          --mount=type=bind,bind-propagation=recursive,src={{ d.mount_point }}/cassandra,dst=/var/lib/cassandra/data-{{ d.name }} 
+          {% endfor %}
+          --mount=type=bind,src={{ cassandra_conf_file }},dst=/etc/cassandra/cassandra.yaml
+          --mount=type=bind,src={{ cassandra_auth_file }},dst=/etc/cassandra/jmxremote.password
+          {{ container }} &"
+  environment:
+    JAVA_HOME: ""
+    CASSANDRA_BROADCAST_ADDRESS: "{{ inventory_hostname }}"
+    CASSANDRA_SEEDS: "{{ groups['storage_nodes'][0] }}"
+    LOCAL_JMX: "no"
+  register: output
+- debug: var=output
+
+- pause:
+    seconds: 35

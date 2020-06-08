@@ -1,0 +1,11 @@
+# The global variable file for container-based dynamic resource provisioning
+
+# Sarus: OCI-compliant container runtime for HPC
+container_runtime_module: sarus
+container_runtime_cmd: "module load {{ container_runtime_module }}; sarus run"
+container_runtime_mnt: "--mount=type=bind,bind-propagation=recursive,source=/mnt,destination=/mnt"
+
+# Tools
+kill_cmd: "pkill -xf -9"
+mount_cmd: "/usr/bin/mount"
+umount_cmd: "/usr/bin/umount"

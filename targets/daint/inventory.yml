@@ -1,0 +1,35 @@
+all:
+  children:
+    compute_nodes:
+      hosts: null
+      vars:
+        ansible_ssh_common_args: '-vvv -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
+        ansible_ssh_extra_args: '-vvv -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
+    master:
+      hosts:
+        dom101:
+          ansible_connection: ssh
+    storage_nodes:
+      hosts:
+        nid0[2384-2387]: null
+        nid0[2416-2419]: null
+      vars:
+        ansible_ssh_common_args: '-vvv -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
+        ansible_ssh_extra_args: '-vvv -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
+        disks:
+        - model: MZPLL6T4HMLS-00003
+          mount_point: /mnt/nvme0n1
+          name: nvme0n1
+          size: 5.9T
+          vendor: SAMSUNG
+        - model: MZPLL6T4HMLS-00003
+          mount_point: /mnt/nvme1n1
+          name: nvme1n1
+          size: 5.9T
+          vendor: SAMSUNG
+        - model: MZPLL6T4HMLS-00003
+          mount_point: /mnt/nvme2n1
+          name: nvme2n1
+          size: 5.9T
+          vendor: SAMSUNG
+  hosts: null
