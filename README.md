@@ -119,14 +119,34 @@ The previous section introduced the two main commands used to start and stop
 servers. Below is the output of `dsrp_deploy.py -h`:
 
 ``` shell
-usage: dsrp_deploy.py [-h] {start,stop} config_file
+─> ./dsrp_deploy.py -h
+usage: dsrp_deploy.py [-h] [-s STORAGE_NODELIST] [-c COMPUTE_NODELIST]
+                      [-t TARGET] [-i STAGE_IN] [-o STAGE_OUT] [-k]
+                      {start,stop} {beegfs,minio,cassandra}
 
 positional arguments:
-  {start,stop}  Start or stop the configured data manager
-  config_file   Path of file containing DSRP configuration
+  {start,stop}          Start or stop the configured data manager
+  {beegfs,minio,cassandra}
+                        Data manager
 
 optional arguments:
-  -h, --help    show this help message and exit
+  -h, --help            show this help message and exit
+  -s STORAGE_NODELIST, --storage-nodelist STORAGE_NODELIST
+                        Storage nodelist for data manager deployment. Usually
+                        a job scheduler environment variable
+  -c COMPUTE_NODELIST, --compute-nodelist COMPUTE_NODELIST
+                        Compute nodelist for clients deployment, Usually a job
+                        scheduler environment variable
+  -t TARGET, --target TARGET
+                        [DEBUG] Target architecture
+  -i STAGE_IN, --stage-in STAGE_IN
+                        Location of staged-out data from a previously deployed
+                        data manager
+  -o STAGE_OUT, --stage-out STAGE_OUT
+                        Location where the data is to be backed up for future
+                        use
+  -k, --keep            Force keeping data on disk after stopping the data
+                        manager
 ```
 
 ### Running an application
