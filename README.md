@@ -54,37 +54,6 @@ storage resources dynamically loads this virtual environment.
 
 ## Using DSRP
 
-### DSRP configuration file
-
-As shown on the figure above, the DSRP tool takes as input a configuration
-file describing how to access storage resources and how to deploy the needed
-data manager. An example using a small-scale development platform based on [Piz
-Daint](https://www.cscs.ch/computers/piz-daint/), our XC50 supercomputer at,
-and [BeeGFS](https://www.beegfs.io/content/), a parallel file system, as a
-data manager is shown below: 
-
-``` yaml
-dsrp:
-  root_dir: /users/ftessier/dynamic-resource-provisioning
-resources:
-  system: dom
-  job_id_env: SLURM_JOB_ID
-  inventory_file: inventory.yml
-  compute_nodes:
-    scheduler_nodelist_env: SLURM_NODELIST_PACK_GROUP_0
-  storage_nodes:
-    scheduler_nodelist_env: SLURM_NODELIST_PACK_GROUP_1
-    disks_per_node: 3
-data_manager:
-  type: beegfs
-  server:
-    start: start_beegfs_servers.yml
-    stop: stop_beegfs_servers.yml
-  client:
-    start: mount_beegfs_clients.yml
-    stop: umount_beegfs_clients.yml
-```
-
 ### Heterogenous allocation
 
 We will focus here on a case where two allocations are required: one with
