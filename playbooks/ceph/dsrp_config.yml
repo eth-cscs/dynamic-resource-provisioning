@@ -1,0 +1,7 @@
+data_manager:
+  server:
+    start: start_ceph_servers.yml
+    stop: stop_ceph_servers.yml
+  client:
+    start: 
+    stop: 
