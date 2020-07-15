@@ -19,7 +19,7 @@ def parse_args ():
     global dsrp_data_manager
     parser = argparse.ArgumentParser ()
     parser.add_argument ("command", choices=['start', 'stop'], help="Start or stop the configured data manager")
-    parser.add_argument ("data_manager", choices=['beegfs', 'minio', 'cassandra'], help="Data manager")
+    parser.add_argument ("data_manager", choices=['beegfs', 'minio', 'ceph', 'cassandra'], help="Data manager")
     parser.add_argument ('-s', '--storage-nodelist',
                          help="Storage nodelist for data manager deployment. Usually a job scheduler environment variable")
     parser.add_argument ('-c', '--compute-nodelist',
