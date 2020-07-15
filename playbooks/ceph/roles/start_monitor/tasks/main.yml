@@ -1,0 +1,16 @@
+- name: Template Ceph Monitor configuration file
+  template:
+    src: "{{ template_dir }}/ceph.conf"
+    dest: "{{ ceph_mon_conf }}"
+
+- name: Start Ceph Monitor daemon
+  vars:
+    ceph_temp_var: "blabla"
+
+  shell: "{{ container_run }}
+          {{ container }}
+          &> /dev/null &"
+  environment:
+    CEPH_TEMP_ENV: "{{ ceph_temp_var }}"
+  register: output
+- debug: var=output

@@ -1,0 +1,7 @@
+mon_name: "ceph-mon"
+mon_bin: "ceph-mon"
+mon_dir: "{{ first_disk }}/{{ mon_name }}"
+mon_log_file: "{{ log_dir }}/{{ mon_name }}.log"
+mon_pid_file: "{{ first_disk }}/{{ mon_name }}.pid"
+mon_conf_filename: "{{ mon_name }}.conf"
+mon_conf_file: "{{ config_dir }}/{{ mon_conf_filename }}"
