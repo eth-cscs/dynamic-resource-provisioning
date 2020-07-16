@@ -1,0 +1,4 @@
+- name: Create logging directory
+  shell: "mkdir -p {{ log_dir }}"
+  register: output
+- debug: var=output.stdout_lines
