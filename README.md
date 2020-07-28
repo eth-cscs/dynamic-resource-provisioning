@@ -174,3 +174,58 @@ sarus pull minio/mc
 ```
 
 ### Cassandra, Highly Scalable Database
+
+## Platform-specific setup
+
+### Sage System @ JSC
+
+On the Sage system hosted at the Juelich Supercomputing Center,
+Germany, the setup is a bit different as we have access to a unique
+storage node (a Cray DataWarp node booted with a regular kernel). In
+addition, for security reason, this node is not `ssh-able` from the
+Sage login node. Therefore, to demonstrate the DynPro tool, it is
+necessary to run the deployement script from a machine that has a
+direct `ssh` access to the DataWarp node (typically, a laptop with the
+proper configuration). 
+
+The node that we will use for this demontration on the Sage system is
+`datawarp-02`. The node is composed of two 1.5TB NVMe disks. Each disk
+has three 500GB partitions. We will use this total of 6 partitions to
+deploy a distributed object-store.
+
+#### Container engine configuration
+
+First of all, the container engine used by DynPro, Sarus, needs to be
+available in the user's PATH. To do so, the following line needs to be
+added to the `.bashrc` file on `datawarp-02`:
+
+```shell
+export PATH=/opt/sarus/1.2.0-Release/bin:${PATH}
+```
+
+Sarus also needs to get information about your user account. Usually,
+this step is done automatically at installation time but for some
+reason, it is not working well on the Sage system. Please edit
+`/opt/sarus/1.2.0-Release/etc/passwd` and add a line at then end like
+this:
+
+```shell
+<username>:x:<uid>:<gid>:<your name>:<home dir path>:/bin/bash
+```
+
+You `uid` and `gid` can be determined with a simple call to `id`.
+
+The last step of configuring the container engine consists in make a
+directory `<username>` under
+`/home/users/project/cmaestro/sarus/images`.
+
+#### Pull images required by DynPro
+
+We now need to build the containers we'll use for our object store. 
+
+```shell
+$ sarus pull minio/minio
+$ sarus pull minio/mc
+$ sarus images
+```
+
