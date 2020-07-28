@@ -1,0 +1,39 @@
+all:
+  children:
+    compute_nodes:
+      hosts: null
+    storage_nodes:
+      hosts:
+        datawarp-02: null
+      vars:
+        disks:
+          - model: SSDPEDME016T4
+            mount_point: /mnt/nvme0n1p1
+            name: nvme0n1p1
+            size: 500G
+            vendor: INTEL
+          - model: SSDPEDME016T4
+            mount_point: /mnt/nvme0n1p2
+            name: nvme0n1p2
+            size: 500G
+            vendor: INTEL
+          - model: SSDPEDME016T4
+            mount_point: /mnt/nvme0n1p3
+            name: nvme0n1p3
+            size: 500G
+            vendor: INTEL
+          - model: SSDPEDME016T4
+            mount_point: /mnt/nvme1n1p1
+            name: nvme1n1p1
+            size: 500G
+            vendor: INTEL
+          - model: SSDPEDME016T4
+            mount_point: /mnt/nvme1n1p2
+            name: nvme1n1p2
+            size: 500G
+            vendor: INTEL
+          - model: SSDPEDME016T4
+            mount_point: /mnt/nvme1n1p3
+            name: nvme1n1p3
+            size: 500G
+            vendor: INTEL

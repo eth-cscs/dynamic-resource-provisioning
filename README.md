@@ -229,3 +229,11 @@ $ sarus pull minio/mc
 $ sarus images
 ```
 
+#### From the master node
+
+Be sure that your DynPro tool has been installed correctly (virtual
+environment and so on) as described in the previous sections.
+
+TODO: [28/07] Support of root-squashed file-systems from Sarus (in
+progress). For now, even a simple `sarus --debug run --entrypoint
+ubuntu ls` fails on `datawarp-02` because of that.
