@@ -1,15 +1,19 @@
 - name: Template Ceph Monitor configuration file
+  vars:
+    uuid: "ed04defa-2c31-4fae-a514-87298a341325"
   template:
     src: "{{ template_dir }}/ceph.conf"
-    dest: "{{ ceph_mon_conf }}"
+    dest: "{{ mon_conf_file }}"
 
 - name: Start Ceph Monitor daemon
   vars:
     ceph_temp_var: "blabla"
+    hack_home_dir: "/users/ftessier"
 
   shell: "{{ container_run }}
+            --mount=type=bind,source={{ hack_home_dir }},destination=/users/ftessier
           {{ container }}
-          &> /dev/null &"
+          mkdir -p /etc/ceph && cp {{ mon_conf_file }} {{ mon_default_conf_file }} && ls -l /etc/ceph"
   environment:
     CEPH_TEMP_ENV: "{{ ceph_temp_var }}"
   register: output
