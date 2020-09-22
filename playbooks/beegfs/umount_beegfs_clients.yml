@@ -6,8 +6,8 @@
   gather_facts: False
 
   tasks:
-    - set_fact: template_dir="{{ root_dir }}/playbooks/beegfs/templates"
-    - set_fact: config_dir="{{ root_dir }}/playbooks/beegfs/configurations"
+    - set_fact: template_dir="{{ playbook_dir }}/templates"
+    - set_fact: config_dir="{{ playbook_dir }}/configurations"
 
 #####################
 # BeeGFS Client     #
