@@ -21,7 +21,7 @@
     storage_name: "beegfs-storage-{{ host_idx }}-{{ item.name }}"
     storage_id: "{{ ( host_idx|int + 1 ) * ( ansible_loop.length + 1 ) + ansible_loop.index0|int }}"
     storage_dir: "{{ item.mount_point }}/{{ storage_name }}"
-  shell: "mkdir {{ storage_dir }};
+  shell: "mkdir -pm a=rwx {{ storage_dir }};
           echo {{ storage_id }} > {{ storage_dir }}/nodeNumID;
           echo {{ storage_id }} > {{ storage_dir }}/targetNumID;
           echo {{ storage_name }} > {{ storage_dir }}/nodeID;"

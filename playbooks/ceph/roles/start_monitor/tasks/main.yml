@@ -7,11 +7,11 @@
 
 - name: Start Ceph Monitor daemon
   vars:
-    ceph_temp_var: "blabla"
-    hack_home_dir: "/users/ftessier"
+    ceph_temp_var: "CEPH_TMP"
+    hack_home_dir: "$HOME"
 
   shell: "{{ container_run }}
-            --mount=type=bind,source={{ hack_home_dir }},destination=/users/ftessier
+            --mount=type=bind,source={{ hack_home_dir }},destination=$HOME
           {{ container }}
           mkdir -p /etc/ceph && cp {{ mon_conf_file }} {{ mon_default_conf_file }} && ls -l /etc/ceph"
   environment:

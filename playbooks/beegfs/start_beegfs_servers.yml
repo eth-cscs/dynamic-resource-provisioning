@@ -7,8 +7,8 @@
     - set_fact: log_dir="{{ first_disk }}/log"
     - set_fact: template_dir="{{ playbook_dir }}/templates"
     - set_fact: config_dir="{{ playbook_dir }}/configurations"
-    - set_fact: container_run="{{ container_runtime_cmd }} --entrypoint {{ container_runtime_mnt }}"
-    - set_fact: container="load/library/beegfs-server"
+    - set_fact: container_run="{{ container_runtime_cmd_nohup }} {{ container_runtime_mnt }}"
+    - set_fact: container="henriquemendonca/beegfs:deb9"
 
 #####################
 # All nodes         #

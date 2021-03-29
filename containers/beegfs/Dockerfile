@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM debian:latest
+FROM debian:9.13
 
 # Set the working directory to /app and coopy files
 WORKDIR /beegfs
@@ -18,7 +18,7 @@ RUN apt-get update && apt-get --assume-yes install $(cat requirements.txt) \
 #   * beegfs-admon: Real-time I/O monitoring
 #
 # link: https://www.beegfs.io/wiki/DownloadInstallationPackages
-RUN wget https://www.beegfs.io/release/latest-stable/dists/beegfs-deb9.list -O /etc/apt/sources.list.d/beegfs-deb9.list \
+RUN wget https://www.beegfs.io/release/beegfs_7.1.5/dists/beegfs-deb9.list -O /etc/apt/sources.list.d/beegfs-deb9.list \
 	&& wget -q https://www.beegfs.io/release/latest-stable/gpg/DEB-GPG-KEY-beegfs -O- | apt-key add - \
 	&& apt-get update \
 	&& apt-get --assume-yes install beegfs-mgmtd beegfs-meta beegfs-storage beegfs-utils beegfs-admon

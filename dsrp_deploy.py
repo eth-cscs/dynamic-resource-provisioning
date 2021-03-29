@@ -24,7 +24,7 @@ def parse_args ():
                          help="Storage nodelist for data manager deployment. Usually a job scheduler environment variable")
     parser.add_argument ('-c', '--compute-nodelist',
                          help="Compute nodelist for clients deployment, Usually a job scheduler environment variable")
-    parser.add_argument ('-t', '--target', help="[DEBUG] Target architecture")
+    parser.add_argument ('-t', '--target', help="[DEBUG] Target architecture", required=True)
     parser.add_argument ('-i', '--stage-in', help="Location of staged-out data from a previously deployed data manager")
     parser.add_argument ('-o', '--stage-out', help="Location where the data is to be backed up for future use")
     parser.add_argument ('-k', '--keep', help="Force keeping data on disk after stopping the data manager", action='store_true')
@@ -54,13 +54,13 @@ def parse_args ():
         
     dsrp_data_manager.load_config (args.data_manager)
     dsrp_inventory.load_inventory (args.target)
-    
+
     if args.storage_nodelist:
         dsrp_inventory.set_storage_nodelist (args.storage_nodelist)
-        
+
     if args.compute_nodelist:
         dsrp_inventory.set_compute_nodelist (args.compute_nodelist)
-        
+
     dsrp_inventory.set_job_inventory()
 
     return args.command

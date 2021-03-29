@@ -8,7 +8,7 @@
 - debug: var=output.results
   
 - name: Create Cassandra directory on disks
-  shell: "mkdir {{ item.mount_point }}/cassandra"
+  shell: "mkdir -p {{ item.mount_point }}/cassandra"
   loop: "{{ disks }}"
   loop_control:
     extended: yes

@@ -37,8 +37,9 @@ necessary to set up a virtual environment and install all the Python packages
 required for DSRP. While being in the DSRP root directory, you can proceed like this:
 
 ``` shell
+git clone https://github.com/eth-cscs/dynamic-resource-provisioning.git
+cd dynamic-resource-provisioning
 pip install --user virtualenv
-mkdir ENV
 virtualenv -p python3 ENV
 source ./ENV/bin/activate
 pip install ansible python-hostlist
@@ -74,10 +75,10 @@ Here, two dependent allocations are requested: 128 computes nodes on the
 multicore queue (mc) and 2 storage nodes each featuring SSDs.
 
 ``` shell
-user@login-mode:~$ salloc -N128 -C mc -t 02:00:00 : -N2 -C storage
-user@login-mode:~$ <DSRP_root_dir>/dsrp_deploy.py start dsrp_config.yml
+user@login-mode:~$ salloc -A<project> -N128 -C mc -t 02:00:00 : -N2 -C storage
+user@login-mode:~$ ./dsrp_deploy.py start beegfs -t$SLURM_CLUSTER_NAME -c$SLURM_JOB_NODELIST_PACK_GROUP_0 -s$SLURM_JOB_NODELIST_PACK_GROUP_1
 user@login-mode:~$ srun <my_app>
-user@login-mode:~$ <DSRP_root_dir>/dsrp_deploy.py stop dsrp_config.yml
+user@login-mode:~$ ./dsrp_deploy.py stop beegfs -t$SLURM_CLUSTER_NAME
 ```
 
 #### With a batch script
@@ -165,6 +166,10 @@ environment variable.
 ## Supported Data Managers
 
 ### BeeGFS, Parallel File System
+
+``` shell
+sarus pull henriquemendonca/beegfs:deb9
+```
 
 ### MinIO, High-Performance Object Storage
 

@@ -2,9 +2,9 @@
 
 # Sarus: OCI-compliant container runtime for HPC
 container_runtime_module: sarus
-container_runtime_cmd: "module load {{ container_runtime_module }}; sarus run"
-container_runtime_cmd_nohup: "module load {{ container_runtime_module }}; nohup sarus run"
-container_runtime_mnt: "--mount=type=bind,bind-propagation=recursive,source=/mnt,destination=/mnt"
+container_runtime_cmd: "module load {{ container_runtime_module }}; {{ container_runtime_module }} run"
+container_runtime_cmd_nohup: "module load {{ container_runtime_module }}; nohup {{ container_runtime_module }} run"
+container_runtime_mnt: "--mount=type=bind,source=/mnt,destination=/mnt"
 
 # Tools
 kill_cmd: "pkill -xf -9"
