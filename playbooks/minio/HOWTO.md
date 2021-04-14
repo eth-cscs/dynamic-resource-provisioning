@@ -38,20 +38,20 @@ wget -c https://github.com/minio/warp/releases/download/v0.3.45/warp_0.3.45_Linu
 Output should look like:
 
 ```
-Throughput 2514.5MiB/s within 7.500000% for 10.29s. Assuming stability. Terminating benchmark.░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░┃  12.33%
-warp: Benchmark data written to "warp-mixed-2021-04-01[164810]-lhfi.csv.zst"                                                                                                                                              
+Throughput 206.3 objects/s within 7.500000% for 10.017s. Assuming stability. Terminating benchmark.░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░┃  12.00%
+warp: Benchmark data written to "warp-mixed-2021-04-14[145015]-0rzO.csv.
 Mixed operations.
-Operation: DELETE, 10%, Concurrency: 20, Duration: 36s.
- * Throughput: 58.38 obj/s
+Operation: DELETE, 10%, Concurrency: 20, Duration: 35s.
+ * Throughput: 68.10 obj/s
 
-Operation: GET, 45%, Concurrency: 20, Duration: 36s.
- * Throughput: 2624.48 MiB/s, 262.45 obj/s
+Operation: GET, 45%, Concurrency: 20, Duration: 35s.
+ * Throughput: 3076.02 MiB/s, 307.60 obj/s
 
-Operation: PUT, 15%, Concurrency: 20, Duration: 36s.
- * Throughput: 875.33 MiB/s, 87.53 obj/s
+Operation: PUT, 15%, Concurrency: 20, Duration: 35s.
+ * Throughput: 1027.22 MiB/s, 102.72 obj/s
 
-Operation: STAT, 30%, Concurrency: 20, Duration: 36s.
- * Throughput: 174.96 obj/s
+Operation: STAT, 30%, Concurrency: 20, Duration: 35s.
+ * Throughput: 205.12 obj/s
 
-Cluster Total: 3496.87 MiB/s, 583.02 obj/s over 37s.
+Cluster Total: 4101.56 MiB/s, 683.34 obj/s over 36s.
 ```
