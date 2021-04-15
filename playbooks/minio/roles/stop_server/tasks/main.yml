@@ -3,9 +3,9 @@
     minio_access_key: "IiaFsQIpRM"
     minio_secret_key: "gQbENgqvagxFt59j4U46m4dwL83kBQmf"
     
-  shell: "{{ container_run }}
+  shell: "{{ container_run }} --entrypoint=/bin/sh
           {{ container }}
-          /bin/sh -c 'mc config host add minio
+          -c 'mc config host add minio
           http://{{ groups['storage_nodes'][0] }}:9000
           {{ minio_access_key }} {{ minio_secret_key }};
           mc admin service stop minio'"
