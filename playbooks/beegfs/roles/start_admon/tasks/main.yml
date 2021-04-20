@@ -7,6 +7,8 @@
   shell: "{{ container_run }}
            --mount=type=bind,source={{ admon_conf_file }},destination=/{{ admon_conf_filename }}
            {{ container }}
-           /opt/beegfs/sbin/beegfs-admon cfgFile=/{{ admon_conf_filename }} pidFile={{ admon_pid_file }} &"
+           /opt/beegfs/sbin/beegfs-admon cfgFile=/{{ admon_conf_filename }} pidFile={{ admon_pid_file }}"
+  async: 604800  # 60*60*24*7 – 7 days
+  poll: 0
   register: output
-- debug: var=output.stdout_lines
+- debug: var=output

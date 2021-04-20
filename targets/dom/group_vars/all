@@ -3,7 +3,6 @@
 # Sarus: OCI-compliant container runtime for HPC
 container_runtime_module: sarus
 container_runtime_cmd: "module load {{ container_runtime_module }}; {{ container_runtime_module }} run"
-container_runtime_cmd_nohup: "module load {{ container_runtime_module }}; nohup {{ container_runtime_module }} run"
 container_runtime_mnt: "--mount=type=bind,source=/mnt,destination=/mnt"
 
 # Tools
