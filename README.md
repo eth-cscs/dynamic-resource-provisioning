@@ -72,10 +72,10 @@ noted that storage nodes have to be allocatable (See
 #### Interactive session
 
 Here, two dependent allocations are requested: 128 computes nodes on the
-multicore queue (mc) and 2 storage nodes each featuring SSDs.
+multicore queue (mc) and 2 storage nodes featuring SSDs.
 
 ``` shell
-user@login-mode:~$ salloc -A<project> -N128 -C mc -t 02:00:00 : -N2 -C storage
+user@login-mode:~$ salloc -A<project> -N128 -C mc -t 02:00:00 : -N2 -C ssd
 user@login-mode:~$ ./dsrp_deploy.py start beegfs -t$SLURM_CLUSTER_NAME -c$SLURM_JOB_NODELIST_PACK_GROUP_0 -s$SLURM_JOB_NODELIST_PACK_GROUP_1
 user@login-mode:~$ srun <my_app>
 user@login-mode:~$ ./dsrp_deploy.py stop beegfs -t$SLURM_CLUSTER_NAME
