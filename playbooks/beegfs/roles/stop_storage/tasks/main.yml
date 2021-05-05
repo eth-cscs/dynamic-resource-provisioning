@@ -9,4 +9,4 @@
   loop_control:
     extended: yes
   register: output
-- debug: var=output.stdout_lines
+- debug: var=output

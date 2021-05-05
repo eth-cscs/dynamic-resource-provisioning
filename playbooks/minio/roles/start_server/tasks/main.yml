@@ -5,13 +5,14 @@
     
   shell: "{{ container_run }}
           {{ container }}
-          /usr/bin/docker-entrypoint.sh
           server
           {% for d in disks %}
           {% for n in groups['storage_nodes'] %}
           http://{{ n }}{{ d.mount_point }}/MinIO
           {% endfor %}
-          {% endfor %} &> /dev/null &"
+          {% endfor %}"
+  async: 604800  # 60*60*24*7 – 7 days
+  poll: 0
   environment:
     MINIO_ACCESS_KEY: "{{ minio_access_key }}"
     MINIO_SECRET_KEY: "{{ minio_secret_key }}"

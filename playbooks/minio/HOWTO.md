@@ -5,17 +5,18 @@
 To start one instance of MinIO:
 
 ```shell
-$ module load sarus
-$ sarus pull minio/minio
+module load sarus
+sarus pull minio/minio
+sarus pull minio/mc
 ```
 
 Then, from the storage nodes that are part of the object store:
 
 ```shell
 module load sarus
-export MINIO_ACCESS_KEY=BLABLABLA
-export MINIO_SECRET_KEY=BLABLABLA
-sarus run --mount=type=bind,bind-propagation=recursive,source=/mnt,destination=/mnt minio/minio server http://nid000{52...53}/mnt/nvme{0...2}n1/MinIO-{0...1}
+export MINIO_ACCESS_KEY=DRP-CSCS
+export MINIO_SECRET_KEY=DRP-CSCS
+srun --pack-group=1 sarus run --mount=type=bind,source=/mnt,destination=/mnt minio/minio server http://nid000{52...55}/mnt/nvme{0...2}n1/MinIO-{0...1}
 ```
 
 ## Client
@@ -23,24 +24,34 @@ sarus run --mount=type=bind,bind-propagation=recursive,source=/mnt,destination=/
 ```shell
 wget https://dl.min.io/client/mc/release/linux-amd64/mc
 chmod +x mc
-mc config host add minio http://148.187.92.53:9000 BLABLABLA BLABLABLA
-mc admin info server minio
+./mc alias set mdom http://nid00052:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
+./mc ls minio
 ```
 
 Run the S3-benchmark
 
 ```shell
-git clone https://github.com/minio/s3-benchmark.git
-cd s3-benchmark/
-mc mb minio/s3-benchmark-bucket
-srun -n1 ./s3-benchmark -a BLABLABLA -s BLABLABLA -b s3-benchmark-bucket -d 300 -l 1 -t 8 -u http://148.187.92.53:9000 -z 1G
+wget -c https://github.com/minio/warp/releases/download/v0.3.45/warp_0.3.45_Linux_x86_64.tar.gz -O - | tar -xz warp
+./warp mixed --host=nid000{52...55}:9000 --access-key=$MINIO_ACCESS_KEY --secret-key=$MINIO_SECRET_KEY --autoterm
 ```
 
 Output should look like:
 
 ```
-Parameters: url=http://148.187.92.53:9000, bucket=s3-benchmark-bucket, duration=300, threads=8, loops=10, size=1G
-Thu, 21 Nov 2019 10:10:48 GMT Loop 1: PUT time 302.7 secs, objects = 473, speed = 1.6GB/sec, 1.6 operations/sec.
-Thu, 21 Nov 2019 10:15:48 GMT Loop 1: GET time 300.9 secs, objects = 1270, speed = 4.2GB/sec, 4.2 operations/sec.
-Thu, 21 Nov 2019 10:15:50 GMT Loop 1: DELETE time 1.3 secs, 363.7 operations/sec.
+Throughput 206.3 objects/s within 7.500000% for 10.017s. Assuming stability. Terminating benchmark.░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░┃  12.00%
+warp: Benchmark data written to "warp-mixed-2021-04-14[145015]-0rzO.csv.
+Mixed operations.
+Operation: DELETE, 10%, Concurrency: 20, Duration: 35s.
+ * Throughput: 68.10 obj/s
+
+Operation: GET, 45%, Concurrency: 20, Duration: 35s.
+ * Throughput: 3076.02 MiB/s, 307.60 obj/s
+
+Operation: PUT, 15%, Concurrency: 20, Duration: 35s.
+ * Throughput: 1027.22 MiB/s, 102.72 obj/s
+
+Operation: STAT, 30%, Concurrency: 20, Duration: 35s.
+ * Throughput: 205.12 obj/s
+
+Cluster Total: 4101.56 MiB/s, 683.34 obj/s over 36s.
 ```

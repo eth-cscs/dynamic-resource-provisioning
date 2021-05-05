@@ -6,11 +6,11 @@
 - name: Create directory to mount BeeGFS
   shell: "mkdir -p {{ client_mount_point }}"
   register: output
-- debug: var=output.stdout_lines
+- debug: var=output
 
 - name: Mount BeeGFS on the compute node
   shell: "sudo {{ mount_cmd }} -t beegfs beegfs_nodev
           {{ client_mount_point }}
           -ocfgFile={{ client_conf_file }},_netdev,,"
   register: output
-- debug: var=output.stdout_lines
+- debug: var=output
