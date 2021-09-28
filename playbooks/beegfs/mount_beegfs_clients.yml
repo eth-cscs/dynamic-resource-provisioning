@@ -8,6 +8,9 @@
   tasks:
     - set_fact: template_dir="{{ playbook_dir }}/templates"
     - set_fact: config_dir="{{ playbook_dir }}/configurations"
+    - set_fact: container_run="{{ container_runtime_cmd }} {{ container_runtime_mnt }}"
+    - set_fact: container="henriquemendonca/beegfs:deb9"
+
 
 #####################
 # BeeGFS Client     #
@@ -18,3 +21,4 @@
     host_idx: "{{ groups['compute_nodes'].index(inventory_hostname) }}"
   roles:
     - mount_client
+

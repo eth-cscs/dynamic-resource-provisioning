@@ -3,8 +3,8 @@
 import os
 
 dsrp_root_dir = os.path.dirname(os.path.realpath(__file__))
-activate_this = dsrp_root_dir+"/ENV/bin/activate_this.py"
-exec(open(activate_this, 'r').read(), dict(__file__=activate_this))
+#activate_this = dsrp_root_dir+"/ENV/bin/activate_this.py"
+#exec(open(activate_this, 'r').read(), dict(__file__=activate_this))
 
 import sys
 import argparse

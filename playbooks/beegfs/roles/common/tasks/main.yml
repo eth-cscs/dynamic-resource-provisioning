@@ -6,7 +6,21 @@
 #     extended: yes
 #   register: output
 # - debug: var=output.results
-- name: Create logging directory
+
+- name: Create BeeGFS working dirs on server nodes
+  shell: "mkdir -p {{ item.mount_point }}/*"
+  ignore_errors: no
+  loop: "{{ disks }}"
+  loop_control:
+    extended: yes
+
+- name: Create log directory
   shell: "mkdir -p {{ log_dir }}"
   register: output
 - debug: var=output
+
+#- name: Create beegfs working directory
+#  shell: "mkdir -p {{ first_disk }}/{{ ansible_user_id }}"
+#  register: output
+#- debug: var=output
+

@@ -1,6 +1,6 @@
 ---
 - hosts: storage_nodes
-  gather_facts: False
+  gather_facts: True
 
   tasks:
     - set_fact: first_disk="{{ disks[0].mount_point }}"
@@ -14,7 +14,6 @@
 # All nodes         #
 #####################
 - hosts: storage_nodes
-  gather_facts: False
   roles:
     - common
        
@@ -25,7 +24,7 @@
   gather_facts: False
   roles:
     - start_mgmtd
-    - start_admon
+#    - start_admon
 
 #####################
 # All nodes         #

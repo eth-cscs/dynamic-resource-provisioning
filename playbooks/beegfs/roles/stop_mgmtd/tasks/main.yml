@@ -1,5 +1,5 @@
 - name: Kill containerized BeeGFS management service
-  shell: pkill -xf "/opt/beegfs/sbin/beegfs-mgmtd cfgFile=/{{ mgmtd_conf_filename }} pidFile={{ mgmtd_pid_file }}"
+  shell: pkill "beegfs-mgmtd"
   ignore_errors: yes
   register: output
 - debug: var=output

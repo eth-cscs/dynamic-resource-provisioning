@@ -4,3 +4,6 @@ client_port_udp: "{{ host_idx|int + 8500 }}"
 client_conf_filename: "{{ client_name }}.conf"
 client_conf_file: "{{ config_dir }}/{{ client_conf_filename }}"
 client_mount_point: "$HOME/beegfs"
+client_helperd_conf: "{{ config_dir }}/beegfs-helperd.conf"
+helperd_log_file: "{{ lookup('env','SCRATCH') }}/beegfs-helperd.log"
+
