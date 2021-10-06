@@ -1,0 +1,3 @@
+mgmtd_host: "{{ groups['storage_nodes'][0] }}"
+helperd_log_file: "{{ lookup('env','SCRATCH') }}/beegfs-helperd.log"
+client_mount_point: "$HOME/beegfs"
