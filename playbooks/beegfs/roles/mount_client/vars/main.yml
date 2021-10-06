@@ -1,5 +1,5 @@
 #client_name: "beegfs-client-{{ host_idx }}"
-client_mgmtd_host: "{{ groups['storage_nodes'][0] }}"
+#client_mgmtd_host: "{{ groups['storage_nodes'][0] }}"
 #client_port_udp: "{{ host_idx|int + 8500 }}"
 client_port_udp: "8500"
 #client_conf_filename: "{{ client_name }}.conf"
