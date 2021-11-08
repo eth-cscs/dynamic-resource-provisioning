@@ -1,26 +1,17 @@
-# - name: Erase all data
-#   shell: "rm -rf {{ item.mount_point }}/*"
-#   ignore_errors: yes
-#   loop: "{{ disks }}"
-#   loop_control:
-#     extended: yes
-#   register: output
-# - debug: var=output.results
+#- name: Create BeeGFS configuration dir for this job
+#  file:
+#    path: "{{ config_dir }}"
+#    state: directory
 
-- name: Create BeeGFS configuration dir for this job
-  file:
-    path: "{{ config_dir }}"
-    state: directory
+#- name: Template BeeGFS client configuration file
+#  template:
+#    src: "{{ template_dir }}/beegfs-client.conf"
+#    dest: "{{ config_dir }}/beegfs-client.conf"
 
-- name: Template BeeGFS client configuration file
-  template:
-    src: "{{ template_dir }}/beegfs-client.conf"
-    dest: "{{ config_dir }}/beegfs-client.conf"
-
-- name: Template BeeGFS helperd configuration file
-  template:
-    src: "{{ template_dir }}/beegfs-helperd.conf"
-    dest: "{{ config_dir }}/beegfs-helperd.conf"
+#- name: Template BeeGFS helperd configuration file
+#  template:
+#    src: "{{ template_dir }}/beegfs-helperd.conf"
+#    dest: "{{ config_dir }}/beegfs-helperd.conf"
 
 - name: Create directory to mount BeeGFS
   file:
@@ -29,7 +20,7 @@
 
 - name: Create BeeGFS working dirs on server nodes
   file:
-    path: "{{ item.mount_point }}/"
+    path: "{{ item.mount_point }}/{{ lookup('env','USER') }}"
     state: directory
   loop: "{{ disks }}"
   loop_control:

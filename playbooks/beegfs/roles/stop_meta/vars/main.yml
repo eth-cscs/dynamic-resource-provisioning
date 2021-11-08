@@ -1,3 +1,0 @@
-meta_name: "beegfs-meta-{{ host_idx }}"
-meta_pid_file: "{{ first_disk }}/{{ meta_name }}.pid"
-meta_conf_filename: "{{ meta_name }}.conf"

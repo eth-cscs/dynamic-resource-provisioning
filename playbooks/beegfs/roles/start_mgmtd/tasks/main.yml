@@ -1,8 +1,23 @@
+- name: Create BeeGFS configuration dir for this job
+  file:
+    path: "{{ config_dir }}"
+    state: directory
+
+- name: Template BeeGFS client configuration file
+  template:
+    src: "{{ template_dir }}/beegfs-client.conf"
+    dest: "{{ config_dir }}/beegfs-client.conf"
+
+- name: Template BeeGFS helperd configuration file
+  template:
+    src: "{{ template_dir }}/beegfs-helperd.conf"
+    dest: "{{ config_dir }}/beegfs-helperd.conf"
+
 - name: Template BeeGFS management configuration file
   template:
     src: "{{ template_dir }}/beegfs-mgmtd.conf"
     dest: "{{ mgmtd_conf_file }}"
-    
+
 - name: Deploy containerized BeeGFS management service
   shell: "{{ container_run }} --mount=type=bind,source={{ mgmtd_conf_file }},destination=/{{ mgmtd_conf_filename }} --entrypoint={{ mgmtd_bin }}  {{ container }}  cfgFile=/{{ mgmtd_conf_filename }} pidFile={{ mgmtd_pid_file }}"
   async: 604800  # 60*60*24*7 – 7 days

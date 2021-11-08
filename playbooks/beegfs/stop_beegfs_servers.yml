@@ -1,9 +1,8 @@
 ---
-- hosts: storage_nodes
-  gather_facts: True
-
-  tasks:
-    - set_fact: first_disk="{{ disks[0].mount_point }}"
+#- hosts: storage_nodes
+#  gather_facts: True
+#  tasks:
+#    - set_fact: first_disk="{{ disks[0].mount_point }}/{{ lookup('env','USER') }}"
 
 #####################
 # All nodes         #

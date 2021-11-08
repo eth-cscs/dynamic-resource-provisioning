@@ -2,8 +2,8 @@
 #####################
 # All nodes         #
 #####################
-- hosts: compute_nodes
-  gather_facts: True
+#- hosts: compute_nodes
+#  gather_facts: True
 
 #  tasks:
 #    - set_fact: template_dir="{{ playbook_dir }}/templates"
