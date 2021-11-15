@@ -14,6 +14,7 @@
 # All nodes         #
 #####################
 - hosts: storage_nodes
+  gather_facts: False
   roles:
     - common
        

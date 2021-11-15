@@ -75,11 +75,14 @@ def main (argv):
             dsrp_data_manager.start_servers (dsrp_inventory.get_job_inventory_file())
         if args.compute_nodelist:
             dsrp_data_manager.start_clients (dsrp_inventory.get_job_inventory_file())
-    else:
+    elif args.command == "stop":
         if args.compute_nodelist:
             dsrp_data_manager.stop_clients (dsrp_inventory.get_job_inventory_file())
         if args.storage_nodelist:
             dsrp_data_manager.stop_servers (dsrp_inventory.get_job_inventory_file())
+    else:
+        print ('Error: unknown command')
+        sys.exit(1)
 
 
 if __name__ == "__main__":
