@@ -1,7 +1,7 @@
 ---
 - hosts: storage_nodes
+  strategy: free
   gather_facts: False
-
   tasks:
     - set_fact: first_disk="{{ disks[0].mount_point }}/{{ lookup('env','USER') }}"
     - set_fact: log_dir="{{ first_disk }}/log"
@@ -14,6 +14,7 @@
 # All nodes         #
 #####################
 - hosts: storage_nodes
+  strategy: free
   gather_facts: False
   roles:
     - common
@@ -31,12 +32,10 @@
 # All nodes         #
 #####################
 - hosts: storage_nodes
+  strategy: free
   gather_facts: False
   vars:
     host_idx: "{{ groups['storage_nodes'].index(inventory_hostname) }}"
   roles:
     - start_meta
     - start_storage
-
-# - pause:
-#     seconds: 30

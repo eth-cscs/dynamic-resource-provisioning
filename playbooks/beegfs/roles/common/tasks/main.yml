@@ -23,12 +23,12 @@
     path: "{{ item.mount_point }}/{{ lookup('env','USER') }}"
     state: directory
   loop: "{{ disks }}"
-  loop_control:
-    extended: yes
+#  loop_control:
+#    extended: yes
 
 - name: Create log directory
   file:
     path: "{{ log_dir }}"
     state: directory
-  register: output
-- debug: var=output
+#  register: output
+#- debug: var=output

@@ -13,6 +13,7 @@
 # BeeGFS Client     #
 #####################
 - hosts: compute_nodes
+  strategy: free
   gather_facts: False
   vars:
     host_idx: "{{ groups['compute_nodes'].index(inventory_hostname) }}"

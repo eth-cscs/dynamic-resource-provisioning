@@ -8,6 +8,7 @@
 # All nodes         #
 #####################
 - hosts: storage_nodes
+  strategy: free
   vars:
     host_idx: "{{ groups['storage_nodes'].index(inventory_hostname) }}"
   roles:
