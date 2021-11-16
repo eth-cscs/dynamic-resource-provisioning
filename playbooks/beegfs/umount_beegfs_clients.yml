@@ -2,17 +2,18 @@
 #####################
 # All nodes         #
 #####################
-- hosts: compute_nodes
-  gather_facts: True
+#- hosts: compute_nodes
+#  gather_facts: True
 
-  tasks:
-    - set_fact: template_dir="{{ playbook_dir }}/templates"
-    - set_fact: config_dir="{{ playbook_dir }}/configurations"
+#  tasks:
+#    - set_fact: template_dir="{{ playbook_dir }}/templates"
+#    - set_fact: config_dir="{{ playbook_dir }}/configurations"
 
 #####################
 # BeeGFS Client     #
 #####################
 - hosts: compute_nodes
+  strategy: free
   gather_facts: False
   vars:
     host_idx: "{{ groups['compute_nodes'].index(inventory_hostname) }}"

@@ -1,12 +1,13 @@
 ---
 - hosts: storage_nodes
+  strategy: free
   gather_facts: False
-
   tasks:
     - set_fact: container_run="{{ container_runtime_cmd }} {{ container_runtime_mnt }}"
     - set_fact: container="minio/minio"
 
 - hosts: storage_nodes
+  strategy: free
   gather_facts: False
   roles:
     - start_server

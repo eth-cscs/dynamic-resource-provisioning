@@ -1,26 +1,35 @@
-# - name: Erase all data
-#   shell: "rm -rf {{ item.mount_point }}/*"
-#   ignore_errors: yes
-#   loop: "{{ disks }}"
-#   loop_control:
-#     extended: yes
-#   register: output
-# - debug: var=output.results
+#- name: Create BeeGFS configuration dir for this job
+#  file:
+#    path: "{{ config_dir }}"
+#    state: directory
+
+#- name: Template BeeGFS client configuration file
+#  template:
+#    src: "{{ template_dir }}/beegfs-client.conf"
+#    dest: "{{ config_dir }}/beegfs-client.conf"
+
+#- name: Template BeeGFS helperd configuration file
+#  template:
+#    src: "{{ template_dir }}/beegfs-helperd.conf"
+#    dest: "{{ config_dir }}/beegfs-helperd.conf"
+
+- name: Create directory to mount BeeGFS
+  local_action:
+    module: ansible.builtin.file
+    path: "{{ client_mount_point }}"
+    state: directory
 
 - name: Create BeeGFS working dirs on server nodes
-  shell: "mkdir -p {{ item.mount_point }}/*"
-  ignore_errors: no
+  file:
+    path: "{{ item.mount_point }}/{{ lookup('env','USER') }}"
+    state: directory
   loop: "{{ disks }}"
-  loop_control:
-    extended: yes
+#  loop_control:
+#    extended: yes
 
 - name: Create log directory
-  shell: "mkdir -p {{ log_dir }}"
-  register: output
-- debug: var=output
-
-#- name: Create beegfs working directory
-#  shell: "mkdir -p {{ first_disk }}/{{ ansible_user_id }}"
+  file:
+    path: "{{ log_dir }}"
+    state: directory
 #  register: output
 #- debug: var=output
-

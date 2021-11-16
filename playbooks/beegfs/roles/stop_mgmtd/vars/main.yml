@@ -1,3 +1,0 @@
-mgmtd_name: "beegfs-mgmtd-0"
-mgmtd_pid_file: "{{ first_disk }}/{{ mgmtd_name }}.pid"
-mgmtd_conf_filename: "{{ mgmtd_name }}.conf"

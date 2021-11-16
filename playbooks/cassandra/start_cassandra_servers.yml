@@ -1,10 +1,10 @@
 ---
 - hosts: storage_nodes
+  strategy: free
   gather_facts: False
-
   tasks:
-    - set_fact: template_dir="{{ root_dir }}/playbooks/cassandra/templates"
-    - set_fact: config_dir="{{ root_dir }}/playbooks/cassandra/configurations"
+    - set_fact: template_dir="{{ playbook_dir }}/templates"
+    - set_fact: config_dir="{{ playbook_dir }}/configurations"
     - set_fact: container_run="{{ container_runtime_cmd }} {{ container_runtime_mnt }}"
     - set_fact: container="cassandra"
 
@@ -14,6 +14,7 @@
     - configure_jmx
 
 - hosts: storage_nodes
+  strategy: free
   gather_facts: False
   roles:
     - setup_disks

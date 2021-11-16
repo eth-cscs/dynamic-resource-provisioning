@@ -51,7 +51,7 @@ def parse_args ():
             print ('Warning: argument --keep (-k) is pointless when deploying a data manager')
         else:
             dsrp_data_manager.disable_clean_up_disks ()
-        
+
     dsrp_data_manager.load_config (args.data_manager)
     dsrp_inventory.load_inventory (args.target)
 
@@ -63,20 +63,27 @@ def parse_args ():
 
     dsrp_inventory.set_job_inventory()
 
-    return args.command
-    
-    
+    return args
+
+
 def main (argv):
     global dsrp_data_manager
-    command = parse_args ()
+    args = parse_args()
 
-    if command == "start":
-        dsrp_data_manager.start_servers (dsrp_inventory.get_job_inventory_file())
-        dsrp_data_manager.start_clients (dsrp_inventory.get_job_inventory_file())
+    if args.command == "start":
+        if args.storage_nodelist:
+            dsrp_data_manager.start_servers (dsrp_inventory.get_job_inventory_file())
+        if args.compute_nodelist:
+            dsrp_data_manager.start_clients (dsrp_inventory.get_job_inventory_file())
+    elif args.command == "stop":
+        if args.compute_nodelist:
+            dsrp_data_manager.stop_clients (dsrp_inventory.get_job_inventory_file())
+        if args.storage_nodelist:
+            dsrp_data_manager.stop_servers (dsrp_inventory.get_job_inventory_file())
     else:
-        dsrp_data_manager.stop_servers (dsrp_inventory.get_job_inventory_file())
-        dsrp_data_manager.stop_clients (dsrp_inventory.get_job_inventory_file())
+        print ('Error: unknown command')
+        sys.exit(1)
 
-        
+
 if __name__ == "__main__":
     main (sys.argv[1:])

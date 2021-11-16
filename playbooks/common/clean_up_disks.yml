@@ -4,7 +4,7 @@
 
   tasks:
   - name: Clean up disks
-    shell: "/bin/rm -rf {{ item.mount_point }}/*"
+    shell: "/bin/rm -rf {{ item.mount_point }}/{{ lookup('env','USER') }}"
     loop: "{{ disks }}"
     loop_control:
       extended: yes
