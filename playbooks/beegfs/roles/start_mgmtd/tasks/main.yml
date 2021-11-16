@@ -1,20 +1,24 @@
 - name: Create BeeGFS configuration dir for this job
-  file:
+  local_action:
+    module: ansible.builtin.file
     path: "{{ config_dir }}"
     state: directory
 
 - name: Template BeeGFS client configuration file
-  template:
+  local_action:
+    module: ansible.builtin.template
     src: "{{ template_dir }}/beegfs-client.conf"
     dest: "{{ config_dir }}/beegfs-client.conf"
 
 - name: Template BeeGFS helperd configuration file
-  template:
+  local_action:
+    module: ansible.builtin.template
     src: "{{ template_dir }}/beegfs-helperd.conf"
     dest: "{{ config_dir }}/beegfs-helperd.conf"
 
 - name: Template BeeGFS management configuration file
-  template:
+  local_action:
+    module: ansible.builtin.template
     src: "{{ template_dir }}/beegfs-mgmtd.conf"
     dest: "{{ mgmtd_conf_file }}"
 

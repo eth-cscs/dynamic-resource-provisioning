@@ -1,8 +1,9 @@
 - name: Template BeeGFS metadata configuration file
-  template:
+  local_action:
+    module: ansible.builtin.template
     src: "{{ template_dir }}/beegfs-meta.conf"
     dest: "{{ meta_conf_file }}"
-    
+
 - name: Deploy containerized BeeGFS metadata service
   shell: "{{ container_run }} --mount=type=bind,source={{ meta_conf_file }},destination=/{{ meta_conf_filename }} --entrypoint=/opt/beegfs/sbin/beegfs-meta  {{ container }} cfgFile=/{{ meta_conf_filename }} pidFile={{ meta_pid_file }}"
   async: 604800  # 60*60*24*7 – 7 days

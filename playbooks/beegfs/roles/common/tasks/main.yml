@@ -14,7 +14,8 @@
 #    dest: "{{ config_dir }}/beegfs-helperd.conf"
 
 - name: Create directory to mount BeeGFS
-  file:
+  local_action:
+    module: ansible.builtin.file
     path: "{{ client_mount_point }}"
     state: directory
 
