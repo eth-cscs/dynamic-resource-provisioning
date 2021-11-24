@@ -1,5 +1,6 @@
 - name: Umount BeeGFS on the compute node
   shell: "sudo {{ umount_cmd }} -t beegfs -l {{ client_mount_point }}"
+  ignore_errors: yes
   register: output
 - debug: var=output.stdout_lines
 
