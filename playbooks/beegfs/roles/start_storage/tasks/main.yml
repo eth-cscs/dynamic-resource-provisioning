@@ -2,8 +2,8 @@
   vars:
     storage_name: "beegfs-storage-{{ host_idx }}-{{ item.name }}"
     storage_dir: "{{ item.mount_point }}/{{ lookup('env','USER') }}/{{ storage_name }}"
-    storage_port_tcp: "{{ host_idx|int * ansible_loop.length + ansible_loop.index0|int + 8100 }}"
-    storage_port_udp: "{{ host_idx|int * ansible_loop.length + ansible_loop.index0|int + 8100 }}"
+    storage_port_tcp: "{{ host_idx|int * ansible_loop.length + ansible_loop.index0|int + 28100 }}"
+    storage_port_udp: "{{ host_idx|int * ansible_loop.length + ansible_loop.index0|int + 28100 }}"
     storage_log_file: "{{ log_dir }}/{{ storage_name }}.log"
     storage_pid_file: "{{ storage?dir }}/{{ storage_name }}.pid"
     storage_conf_filename: "{{ storage_name }}.conf"

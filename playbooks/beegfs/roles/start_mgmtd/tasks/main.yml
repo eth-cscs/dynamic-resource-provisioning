@@ -4,15 +4,18 @@
     path: "{{ config_dir }}"
     state: directory
 
-- name: Create connauthfile with 400 permissions
+- name: Generate connauthfile from random
+  local_action:
+    module: ansible.builtin.shell
+    cmd: "dd if=/dev/random of={{ config_dir }}/connauthfile bs=1 count=128"
+
+- name: Set connauthfile with 644 permissions
   local_action:
     module: ansible.builtin.file
     path: "{{ config_dir }}/connauthfile"
-    mode: '400'
-
-- name: Write to connauthfile from random
-  local_action:
-    module: ansible.builtin.shell: "dd if=/dev/random of={{ config_dir }}/connauthfile bs=1 count=128"
+    state: file
+    # must be readable by others for sudo mounting
+    mode: '644'
 
 - name: Template BeeGFS client configuration file
   local_action:
