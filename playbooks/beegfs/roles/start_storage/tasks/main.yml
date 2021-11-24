@@ -2,8 +2,8 @@
   vars:
     storage_name: "beegfs-storage-{{ host_idx }}-{{ item.name }}"
     storage_dir: "{{ item.mount_point }}/{{ lookup('env','USER') }}/{{ storage_name }}"
-    storage_port_tcp: "{{ host_idx|int * ansible_loop.length + ansible_loop.index0|int + 8100 }}"
-    storage_port_udp: "{{ host_idx|int * ansible_loop.length + ansible_loop.index0|int + 8100 }}"
+    storage_port_tcp: "{{ host_idx|int * ansible_loop.length + ansible_loop.index0|int + 28100 }}"
+    storage_port_udp: "{{ host_idx|int * ansible_loop.length + ansible_loop.index0|int + 28100 }}"
     storage_log_file: "{{ log_dir }}/{{ storage_name }}.log"
     storage_pid_file: "{{ storage?dir }}/{{ storage_name }}.pid"
     storage_conf_filename: "{{ storage_name }}.conf"
@@ -37,7 +37,7 @@
     storage_pid_file: "{{ item.mount_point }}/{{ lookup('env','USER') }}/{{ storage_name }}.pid"
     storage_conf_filename: "{{ storage_name }}.conf"
     storage_conf_file: "{{ config_dir }}/{{ storage_conf_filename }}"
-  shell: "{{ container_run }}  --mount=type=bind,source={{ storage_conf_file }},destination=/{{ storage_conf_filename }} --entrypoint=/opt/beegfs/sbin/beegfs-storage {{ container }} cfgFile=/{{ storage_conf_filename }} pidFile={{ storage_pid_file }}"
+  shell: "{{ container_run }}  --mount=type=bind,source={{ storage_conf_file }},destination=/{{ storage_conf_filename }} --mount=type=bind,source={{ config_dir }}/connauthfile,destination=/etc/beegfs/connauthfile --entrypoint=/opt/beegfs/sbin/beegfs-storage {{ container }} cfgFile=/{{ storage_conf_filename }} pidFile={{ storage_pid_file }}"
   async: 604800  # 60*60*24*7 – 7 days
   poll: 0
   loop: "{{ disks }}"

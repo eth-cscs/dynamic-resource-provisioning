@@ -4,6 +4,19 @@
     path: "{{ config_dir }}"
     state: directory
 
+- name: Generate connauthfile from random
+  local_action:
+    module: ansible.builtin.shell
+    cmd: "dd if=/dev/random of={{ config_dir }}/connauthfile bs=1 count=128"
+
+- name: Set connauthfile with 644 permissions
+  local_action:
+    module: ansible.builtin.file
+    path: "{{ config_dir }}/connauthfile"
+    state: file
+    # must be readable by others for sudo mounting
+    mode: '644'
+
 - name: Template BeeGFS client configuration file
   local_action:
     module: ansible.builtin.template
@@ -23,7 +36,7 @@
     dest: "{{ mgmtd_conf_file }}"
 
 - name: Deploy containerized BeeGFS management service
-  shell: "{{ container_run }} --mount=type=bind,source={{ mgmtd_conf_file }},destination=/{{ mgmtd_conf_filename }} --entrypoint={{ mgmtd_bin }}  {{ container }}  cfgFile=/{{ mgmtd_conf_filename }} pidFile={{ mgmtd_pid_file }}"
+  shell: "{{ container_run }} --mount=type=bind,source={{ mgmtd_conf_file }},destination=/{{ mgmtd_conf_filename }} --mount=type=bind,source={{ config_dir }}/connauthfile,destination=/etc/beegfs/connauthfile --entrypoint={{ mgmtd_bin }}  {{ container }}  cfgFile=/{{ mgmtd_conf_filename }} pidFile={{ mgmtd_pid_file }}"
   async: 604800  # 60*60*24*7 – 7 days
   poll: 0
   register: output
